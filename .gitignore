@@ -1,0 +1,28 @@
+# ignore folder contents
+data/*
+qza/*
+classifiers/
+.snakemake/
+test/
+quality/
+old-qza/
+fastqc/
+kmer/
+old/
+documentation/
+db/
+
+# keep folders
+!data/.gitkeep
+!qza/.gitkeep
+
+# ignore files
+*.fastq
+*.svg
+*.out
+*.json
+*.sh
+*.report
+*.tsv
+*.csv
+

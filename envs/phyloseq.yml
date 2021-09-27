@@ -1,0 +1,12 @@
+channels:
+  - r
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  
+  - r-optparse
+  - r-base
+  - r-essentials
+  - bioconductor-multtest
+  - bioconductor-phyloseq

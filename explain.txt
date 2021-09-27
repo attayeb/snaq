@@ -1,0 +1,63 @@
+                                                                  
+     #####    ##                                        #######   
+  ######  /  #### /                                    /      ### 
+ /#   /  /   ####/                                    /        ## 
+/    /  /    # #               ##                     ##       #  
+    /  /     #                 ##                             /   
+   ## ##     #         /###     ##    ###    ####            /    
+   ## ##     #        / ###  /   ##    ###     ###  /       /     
+   ## ########       /   ###/    ##     ###     ###/       /      
+   ## ##     #      ##    ##     ##      ##      ##       /       
+   ## ##     ##     ##    ##     ##      ##      ##       #       
+   #  ##     ##     ##    ##     ##      ##      ##        ##     
+      /       ##    ##    ##     ##      ##      ##               
+  /##/        ##    ##    ##     ##      /#      /         #      
+ /  #####      ##    ######       ######/ ######/         ###     
+/     ##              ####         #####   #####           #      
+#                                                                 
+ ##                                                               
+                                                                  
+
+To generate results of QIIME analysis, please kindly follow these steps:
+1. create a new folder in data/ folder with the cohort name (cohort).
+2. copy fastq files to that folder.
+3. send snakemake command including the target eg:
+    a. If you want to produce data artifact without any modification:
+      $ snakemake --cores 10 qza/cohort/cohort_raw.qza
+      This will create the artifact without any processing.
+    b. If you want to apply trimming:
+      $ snakemake --cores 10 qza/cohort/cohort_bb18t.qza
+        bb: bbduk
+        t: trimming
+        18: trimming threshold (it can take any value you decide)
+      if you want to trim at threshold 12 you should send the command:
+      $ snakemake --cores 10 qza/cohort/cohort_bb12t.qza
+    c. dada2 produces 3 files: seq, stats, and table.
+      $ snakemake --cores 10 qza/cohort/cohort_bb12t_f17_r21_dadaseq.qza
+        f: forward trimming for primer, if no trimming needed you can use _f0
+        r: reverse trimming for primer, if no trimming needed you can use _r0
+        dadaseq.qza: you can use any of dadaseq, or dadastats, or dadatable any command is fine and all the three files will be produced.
+    d. taxonomy assignment:
+      $ snakemake --cores 10 qza/cohort/cohort_bb12t_f17_r21_silva_taxonomy.qza
+        silva_taxonomy: can be replaced with gg_taxonomy, or silvaV34
+    e. to produce biom table:
+      $ snakemake --cores 10 qza/cohort/cohort_bb12t_f17_r21_silva.biom
+    f. to produce tree file:
+      $ snakemake --cores 10 qza/cohort/cohort_bb12t_f17_r21_fasttree.nwk
+    g. to do all the analysis and produce R phyloseq RDS file contain all the results:
+      $ snakemake --cores 10 qza/cohort/cohort_bb12t_f17_r21_silvaV34_phylodseq.RDS
+    
+4. You need to send the final command without caring about intermediates:
+    for example the following command:
+    $ snakemake --cores 10 qza/cohort/cohort_bb12t_f17_r21_silvaV34_phylodseq.RDS
+
+    will do all the required steps, and you can modify parameters by changing them in the target file name.
+
+
+Thank you and enjoy using Our snakemake pipeline.
+
+"We make it with care"
+
+Attayeb Mohsen
+
+
