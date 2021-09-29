@@ -131,15 +131,15 @@ rule download_gg_classifier:
      output:
           "classifiers/gg-classifier.qza"
      shell:
-          "cd classifiers && 
-          wget https://zenodo.org/record/5535616/files/gg-classifier.qza"
+          "cd classifiers && "
+          "wget https://zenodo.org/record/5535616/files/gg-classifier.qza"
 
 rule download_silvav34_classifier:
      output:
           "classifiers/silvaV34-classifier.qza"
      shell:
-          "cd classifiers && 
-          wget https://zenodo.org/record/5535616/files/silvaV34-classifier.qza"
+          "cd classifiers && "
+          "wget https://zenodo.org/record/5535616/files/silvaV34-classifier.qza"
 
 
 rule taxonomy:
