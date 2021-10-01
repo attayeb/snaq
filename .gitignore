@@ -25,4 +25,5 @@ db/
 *.report
 *.tsv
 *.csv
-
+*.qza
+*.fastq.gz
