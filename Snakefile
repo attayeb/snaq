@@ -146,7 +146,7 @@ rule rarefy:
      input:
           "qza/{cohort}/{id}-table_rrf0.qza"
      output:
-          "qza/{cohort}/{id}-table-rrf{r}.qza"
+          "qza/{cohort}/{id}-table_rrf{r}.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
