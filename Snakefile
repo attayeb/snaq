@@ -109,7 +109,7 @@ rule trim_bbduk:
      input:
           qza="qza/{cohort}/{cohort}_{etc}.qza"
      output:
-          "qza/{cohort}/{cohort}_{etc}_bb{threshold}.qza"
+          "qza/{cohort}/{cohort}_{etc}_bb{threshold}t.qza"
      message:
           "Trimming using bbduk"
      params:
