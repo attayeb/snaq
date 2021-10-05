@@ -1,11 +1,9 @@
-#####################################################################
-##                                                                  
-##   Written by: Attayeb Mohsen
-##   NIBIOHN
-##   attayeb@nibiohn.go.jp
-##
-#####################################################################
+"""
+Snakemake pipeline for analyzing 16S RNA data using QIIME2
 
+How to run it:
+
+"""
 
 rule explain:
      input:
@@ -17,10 +15,36 @@ rule explain:
 
 
 def get_allfile_names(wildcards):
+     """Get all files from a foler"""
      input_folder = os.path.join("data", wildcards.cohort)
      return [os.path.join(input_folder, x) for x in os.listdir(input_folder)]
 
+rule print_help:
+     """  Print help
+     Input: None
+     Output: None
+     Action: print out the information of rules on screen
+     """
+     run:
+          from termcolor import cprint
+          for rule in workflow.rules:
+               try:
+                    if not rule.name.startswith('_'):
+                         cprint(rule.name, "red", attrs=["bold"])
+                         cprint(rule.docstring, "green")
+               except:
+                    pass
+          
+          
+          
+
+
 rule fastqc:
+     """  Fastqc
+     Input: Fastq files
+     Output: fastq report html file.
+     Action: Run fastqc quality control analysis
+     """
      input:
           get_allfile_names
      output:
@@ -44,10 +68,15 @@ rule multiqc:
           "multiqc -o {output} {input}"
 
 rule import_data:
+     """  Import data:
+     Input: folder with fastq files (pair-ended)
+     Output: QIIME2 data sequence artiact.
+     Action: Import the raw fastq files to Qiime2 artifact with qza 
+     """
      input:
           "data/{cohort}" 
      output:
-          "qza/{cohort}/{id}_raw.qza"
+          "qza/{cohort}/{cohort}_raw.qza"
      message:
           "Import data"
      conda: 
@@ -59,11 +88,28 @@ rule import_data:
 	     "--input-format CasavaOneEightSingleLanePerSampleDirFmt "
 	     "--output-path {output} "
 
+rule cutadapt:
+     input:
+          "qza/{cohort}/{cohort}_raw.qza"
+     output:
+          "qza/{cohort}/{cohort}_cutadapt.qza"
+     conda:
+          "envs/qiime2-latest-py38-linux-conda.yml"
+     threads:
+          20
+     shell:
+          "qiime cutadapt trim-paired "
+          "--i-demultiplexed-sequences {input} "
+          "--p-cores {threads} "
+          "--o-trimmed-sequences {output}"
+
+
+
 rule trim_bbduk:
      input:
-          qza="qza/{cohort}/{id}_raw.qza"
+          qza="qza/{cohort}/{cohort}_raw.qza"
      output:
-          "qza/{cohort}/{id}_bb{threshold}t.qza"
+          "qza/{cohort}/{cohort}_bb{threshold}t.qza"
      message:
           "Trimming using bbduk"
      params:
@@ -76,11 +122,11 @@ rule trim_bbduk:
 
 rule dada2:
      input:
-          "qza/{cohort}/{id}_{etc}.qza"
+          "qza/{cohort}/{cohort}_{etc}.qza"
      output:
-          table="qza/{cohort}/{id}_{etc}_f{f}_r{r}_dadatable_0r.qza",
-	     stats="qza/{cohort}/{id}_{etc}_f{f}_r{r}_dadastats.qza",
-	     ref_seq="qza/{cohort}/{id}_{etc}_f{f}_r{r}_dadaseq.qza"
+          table="qza/{cohort}/{cohort}_{etc}_f{f}_r{r}_dadatable_0r.qza",
+	     stats="qza/{cohort}/{cohort}_{etc}_f{f}_r{r}_dadastats.qza",
+	     ref_seq="qza/{cohort}/{cohort}_{etc}_f{f}_r{r}_dadaseq.qza"
      message:
           "Dada2 analysis"
      threads: 30
