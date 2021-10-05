@@ -92,7 +92,7 @@ rule cutadapt:
      input:
           "qza/{cohort}/{cohort}_raw.qza"
      output:
-          "qza/{cohort}/{cohort}_cutadapt.qza"
+          "qza/{cohort}/{cohort}_ca.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      threads:
@@ -107,9 +107,9 @@ rule cutadapt:
 
 rule trim_bbduk:
      input:
-          qza="qza/{cohort}/{cohort}_raw.qza"
+          qza="qza/{cohort}/{cohort}_{etc}.qza"
      output:
-          "qza/{cohort}/{cohort}_bb{threshold}t.qza"
+          "qza/{cohort}/{cohort}_{etc}_bb{threshold}.qza"
      message:
           "Trimming using bbduk"
      params:
@@ -124,9 +124,9 @@ rule dada2:
      input:
           "qza/{cohort}/{cohort}_{etc}.qza"
      output:
-          table="qza/{cohort}/{cohort}_{etc}_f{f}_r{r}_dadatable_0r.qza",
-	     stats="qza/{cohort}/{cohort}_{etc}_f{f}_r{r}_dadastats.qza",
-	     ref_seq="qza/{cohort}/{cohort}_{etc}_f{f}_r{r}_dadaseq.qza"
+          table="qza/{cohort}/{cohort}_{etc}_dd-f{f}-r{r}-table_rrf0.qza",
+	     stats="qza/{cohort}/{cohort}_{etc}_dd-f{f}-r{r}-stats.qza",
+	     ref_seq="qza/{cohort}/{cohort}_{etc}_dd-f{f}-r{r}-seq.qza"
      message:
           "Dada2 analysis"
      threads: 30
@@ -144,9 +144,9 @@ rule dada2:
 
 rule rarefy:
      input:
-          "qza/{cohort}/{id}_dadatable_0r.qza"
+          "qza/{cohort}/{id}-table_rrf0.qza"
      output:
-          "qza/{cohort}/{id}_dadatable_{r}r.qza"
+          "qza/{cohort}/{id}-table-rrf{r}.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -157,9 +157,9 @@ rule rarefy:
 
 rule plot_dada_stats:
      input:
-          "qza/{cohort}/{id}_dadastats.qza"
+          "qza/{cohort}/{id}-stats.qza"
      output:
-          "qza/{cohort}/plots/{id}_dadastats.pdf"
+          "qza/{cohort}/plots/{id}-stats.pdf"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -190,7 +190,7 @@ rule download_silvav34_classifier:
 
 rule taxonomy:
      input:
-          refseq = "qza/{cohort}/{id}_dadaseq.qza",
+          refseq = "qza/{cohort}/{id}-seq.qza",
 	     classifier = "classifiers/{cls}-classifier.qza"
      output:
           taxonomy= "qza/{cohort}/{id}_{cls}_taxonomy.qza",
@@ -211,9 +211,9 @@ rule taxonomy:
 
 rule mafft:
      input:
-          "qza/{cohort}/{id}_dadaseq.qza"
+          "qza/{cohort}/{id}_seq.qza"
      output:
-          "qza/{cohort}/tree/{id}_dadaseqaligned.qza"
+          "qza/{cohort}/tree/{id}_seqaligned.qza"
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"
      message:
@@ -225,9 +225,9 @@ rule mafft:
 
 rule alignment_mask:
      input:
-          "qza/{cohort}/tree/{id}_dadaseqaligned.qza"
+          "qza/{cohort}/tree/{id}_seqaligned.qza"
      output:
-          "qza/{cohort}/tree/{id}_dadaseqaligned_masked.qza"
+          "qza/{cohort}/tree/{id}_seqaligned_masked.qza"
      message:
           "Alignment mask"
      conda: 
@@ -239,7 +239,7 @@ rule alignment_mask:
 
 rule fasttree:
      input:
-          "qza/{cohort}/tree/{id}_dadaseqaligned_masked.qza"
+          "qza/{cohort}/tree/{id}_seqaligned_masked.qza"
      output:
           "qza/{cohort}/tree/{id}_fasttree.qza"
      conda: 
@@ -290,10 +290,10 @@ rule export_tree:
 
 rule make_biom:
      input:
-          table="qza/{cohort}/{id}_dadatable_{r}r.qza",
+          table="qza/{cohort}/{id}-table-rrf{r}.qza",
           taxonomy="qza/{cohort}/{id}_{cls}_taxonomy.qza"
      output:
-          "qza/{cohort}/{id}_{cls}_{r}r.biom"
+          "qza/{cohort}/{id}_{cls}_rrf{r}.biom"
      message:
           "Making biom table {output}"
      conda: 
@@ -305,7 +305,7 @@ rule make_biom:
 
 rule export_phyloseq:
      input:
-          biom="qza/{cohort}/{id}_{cls}_{r}r.biom",
+          biom="qza/{cohort}/{id}_{cls}_rrf{r}.biom",
           tree="qza/{cohort}/{id}_fasttree.nwk"
      output:
           "qza/{cohort}/{id}_{cls}_{r}r_phyloseq.RDS"
@@ -316,10 +316,10 @@ rule export_phyloseq:
           
 rule weighted_unifrac:
      input:
-          table="qza/{cohort}/{id}_dadatable_{r}r.qza",
+          table="qza/{cohort}/{id}-table_rrf{r}.qza",
           tree="qza/{cohort}/{id}_fasttree_rooted.qza"
      output:
-          "qza/{cohort}/{id}_{r}r_weightedunifrac.qza"
+          "qza/{cohort}/{id}_rrf{r}_weightedunifrac.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -329,10 +329,10 @@ rule weighted_unifrac:
 
 rule unweighted_unifrac:
      input:
-          table="qza/{cohort}/{id}_dadatable_{r}r.qza",
+          table="qza/{cohort}/{id}-table_rrf{r}.qza",
           tree="qza/{cohort}/{id}_fasttree_rooted.qza"
      output:
-          "qza/{cohort}/{id}_{r}r_unweightedunifrac.qza"
+          "qza/{cohort}/{id}_rrf{r}_unweightedunifrac.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -353,9 +353,9 @@ rule extract_taxonomy_csv:
 
 rule extract_dadatable_csv:
      input:
-          "qza/{cohort}/{id}_dadatable_{r}r.qza"           
+          "qza/{cohort}/{id}-table_rrf{r}.qza"           
      output:
-          "qza/{cohort}/{id}_dadatable_{r}r.csv"
+          "qza/{cohort}/{id}-table_rrf{r}.csv"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -376,10 +376,10 @@ rule extract_unifrac_csv:
 
 rule merge_dadatable:
      input:
-          f1="qza/{cohort1}/{cohort1}_{id}_dadatable_{r}.qza",
-          f2="qza/{cohort2}/{cohort2}_{id}_dadatable_{r}.qza"
+          f1="qza/{cohort1}/{cohort1}_{id}-table_rrf{r}.qza",
+          f2="qza/{cohort2}/{cohort2}_{id}-table_rrf{r}.qza"
      output:
-          "qza/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}_dadatable_{r}.qza"
+          "qza/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}_table-rrf{r}.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -390,10 +390,10 @@ rule merge_dadatable:
 
 rule merge_dadaseq:
      input:
-          f1="qza/{cohort1}/{cohort1}_{id}_dadaseq.qza",
-          f2="qza/{cohort2}/{cohort2}_{id}_dadaseq.qza"
+          f1="qza/{cohort1}/{cohort1}_{id}-seq.qza",
+          f2="qza/{cohort2}/{cohort2}_{id}-seq.qza"
      output:
-          "qza/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}_dadaseq.qza"
+          "qza/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}-seq.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -420,9 +420,9 @@ rule merge_taxonomy:
 
 rule alpha_diversity:
      input:
-          "qza/{cohort}/{id}_dadatable_{r}r.qza"
+          "qza/{cohort}/{id}-table_rrf{r}.qza"
      output:
-          "qza/{cohort}/{id}_{r}r_alphadiversity.tsv"
+          "qza/{cohort}/{id}_ttf{r}_alphadiversity.tsv"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"          
      shell:
@@ -432,100 +432,14 @@ rule alpha_diversity:
 rule manta:
      input:
           taxonomy="qza/{cohort}/{id}_{cls}_taxonomy.csv",
-          abundancy="qza/{cohort}/{id}_dadatable_{r}r.csv",
-          wunifrac="qza/{cohort}/{id}_{r}r_weightedunifrac.csv",
-          uwunifrac="qza/{cohort}/{id}_{r}r_unweightedunifrac.csv"
+          abundancy="qza/{cohort}/{id}_dadatable_rrf{r}.csv",
+          wunifrac="qza/{cohort}/{id}_rrf{r}_weightedunifrac.csv",
+          uwunifrac="qza/{cohort}/{id}_rrf{r}_unweightedunifrac.csv"
 
      output:
-          "qza/{cohort}/manta/{id}_{cls}_{r}r.zip"
+          "qza/{cohort}/manta/{id}_{cls}_rrf{r}.zip"
      shell:
           "zip -j {output} {input}"
-
-
-def get_kraken2_files(wildcards):
-     files = os.listdir("data/{}".format(wildcards.cohort))
-     files = [file.split("_")[0] for file in files if "_1.fastq.gz" in file]
-     return files
-
-
-KRAKEN = "/data/microbiome/kraken2/kraken2"
-
-
-rule kraken2:
-     input:
-          r1 = "data/{cohort}/{id}_L001_R1_001.fastq.gz",
-          r2 = "data/{cohort}/{id}_L001_R2_001.fastq.gz"
-     output:
-          report = "kmer/{cohort}/kraken/{id}_{db}_kraken.rep",
-          output = "kmer/{cohort}/kraken/{id}_{db}_kraken.outp"
-     shell:
-          "{KRAKEN} --db /data/microbiome/kraken2/{wildcards.db} "
-          "--threads 30 "
-          "--output {output.output} "
-          "--report {output.report} "
-          "{input.r1} {input.r2}"
-
-BRACKEN = "/data/microbiome/bracken/bracken"
-
-
-rule bracken:
-     input:
-          "kmer/{cohort}/kraken/{id}_{db}_kraken.rep"
-     output:
-          report = "kmer/{cohort}/bracken/{id}_{db}_{l}_bracken.rep",
-          output = "kmer/{cohort}/bracken/{id}_{db}_{l}_bracken.outp"
-     shell:
-          "{BRACKEN} -d /data/microbiome/kraken2/{wildcards.db} "
-          "-r 300 -i {input} -l {wildcards.l} -o {output.output} -w {output.report}"
-
-def get_kraken_files(wildcards):
-     files = os.listdir("data/{}/".format(wildcards.cohort))
-     files = [file.split("_L001_")[0] for file in files if "_R1_" in file]
-     ret = [os.path.join("kmer/{}/kraken/".format(wildcards.cohort), "{}_{}_kraken.rep").format(file, wildcards.db) for file in files]
-     
-     return ret
-
-rule merge_kraken:
-     input:
-          get_kraken_files
-     output:
-          "kmer/{cohort}/summarized/{cohort}_{db}_kraken.json"
-     params:
-          inputfiles=lambda wildcards, input: ",".join(input)
-     shell:
-          "python scripts/summarize.py --files {params.inputfiles} --outp {output}"
-
-
-
-def get_bracken_files(wildcards):
-     files = os.listdir("data/{}/".format(wildcards.cohort))
-     files = [file.split("_L001_")[0] for file in files if "_R1_" in file]
-     ret = [os.path.join("kmer/{}/bracken/".format(wildcards.cohort), "{}_{}_{}_bracken.rep").format(file, wildcards.db, wildcards.l) for file in files]
-     
-     return ret
-
-
-
-
-rule merge_bracken:
-     input:
-          files=get_bracken_files,
-          merged_kraken="kmer/{cohort}/summarized/{cohort}_{db}_kraken.json"
-     output:
-          "kmer/{cohort}/summarized/{cohort}_{db}_{l}_bracken.json"
-     params:
-          inputfiles=lambda wildcards, input: ",".join(input.files)
-     shell:
-          "python scripts/summarize.py --files {params.inputfiles} --outp {output}"
-
-
-rule make_cami:
-     input:
-          "kmer/{cohort}/bracken/{id}_{db}_{l}_bracken.rep"
-     output:
-          "kmer/{cohort}/cami/{id}_{db}_{l}.cami"
-     shell:
-          "python scripts/kraken2cami.py -i {input} -o {output} -d db/ -s {wildcards.id}"
 
 
 ruleorder: taxonomy > merge_taxonomy 
