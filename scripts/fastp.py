@@ -58,7 +58,7 @@ def fastp_trim(artifact, len1, len2):
 @click.option("--len1", "len1", required=True, type=int)
 @click.option("--len2", "len2", required=True, type=int)
 @click.option("-o", "output", required=True, type=str)
-def analyze(file_name, quality_threshold, output):
+def analyze():
     art = Artifact.load(file_name)
     trimmed = fastp_trim(art, len1, len2)
     trimmed.save(output)
