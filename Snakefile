@@ -16,7 +16,7 @@ rule explain:
 
 rule export_artifact:
      input:
-          "qza/{cohort}/{id}.qza"
+          "results/{cohort}/{id}.qza"
      output:
           directory("temp/{cohort}/{id}")
      conda:
@@ -118,7 +118,7 @@ rule import_data:
      input:
           "data/{cohort}" 
      output:
-          "qza/{cohort}/{cohort}_raw.qza"
+          "results/{cohort}/{cohort}_raw.qza"
      message:
           "Import data"
      conda: 
@@ -132,9 +132,9 @@ rule import_data:
 
 rule cutadapt:
      input:
-          "qza/{cohort}/{cohort}_raw.qza"
+          "results/{cohort}/{cohort}_raw.qza"
      output:
-          "qza/{cohort}/{cohort}_ca.qza"
+          "results/{cohort}/{cohort}_ca.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      threads:
@@ -149,9 +149,9 @@ rule cutadapt:
 
 rule trim_bbduk:
      input:
-          qza="qza/{cohort}/{cohort}_{etc}.qza"
+          qza="results/{cohort}/{cohort}_{etc}.qza"
      output:
-          "qza/{cohort}/{cohort}_{etc}_bb{threshold}t.qza"
+          "results/{cohort}/{cohort}_{etc}_bb{threshold}t.qza"
      message:
           "Trimming using bbduk"
      params:
@@ -164,11 +164,11 @@ rule trim_bbduk:
 
 rule dada2:
      input:
-          "qza/{cohort}/{cohort}_{etc}.qza"
+          "results/{cohort}/{cohort}_{etc}.qza"
      output:
-          table="qza/{cohort}/{cohort}_{etc}_dd-f{f}-r{r}-table_rrf0.qza",
-	     stats="qza/{cohort}/{cohort}_{etc}_dd-f{f}-r{r}-stats.qza",
-	     ref_seq="qza/{cohort}/{cohort}_{etc}_dd-f{f}-r{r}-seq.qza"
+          table="results/{cohort}/{cohort}_{etc}_dd-f{f}-r{r}-table_rrf0.qza",
+	     stats="results/{cohort}/{cohort}_{etc}_dd-f{f}-r{r}-stats.qza",
+	     ref_seq="results/{cohort}/{cohort}_{etc}_dd-f{f}-r{r}-seq.qza"
      message:
           "Dada2 analysis"
      threads: 30
@@ -186,9 +186,9 @@ rule dada2:
 
 rule rarefy:
      input:
-          "qza/{cohort}/{id}-table_rrf0.qza"
+          "results/{cohort}/{id}-table_rrf0.qza"
      output:
-          "qza/{cohort}/{id}-table_rrf{r}.qza"
+          "results/{cohort}/{id}-table_rrf{r}.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -199,9 +199,9 @@ rule rarefy:
 
 rule plot_dada_stats:
      input:
-          "qza/{cohort}/{id}-stats.qza"
+          "results/{cohort}/{id}-stats.qza"
      output:
-          "qza/{cohort}/plots/{id}-stats.pdf"
+          "results/{cohort}/plots/{id}-stats.pdf"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -232,11 +232,11 @@ rule download_silvav34_classifier:
 
 rule taxonomy:
      input:
-          refseq = "qza/{cohort}/{id}-seq.qza",
+          refseq = "results/{cohort}/{id}-seq.qza",
 	     classifier = "classifiers/{cls}-classifier.qza"
      output:
-          taxonomy= "qza/{cohort}/{id}_cls-{cls}_taxonomy.qza",
-	#table = "qza/{resfseq}_{cls}_table.qzv"
+          taxonomy= "results/{cohort}/{id}_cls-{cls}_taxonomy.qza",
+	#table = "results/{resfseq}_{cls}_table.qzv"
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"
      threads: 30
@@ -253,9 +253,9 @@ rule taxonomy:
 
 rule mafft:
      input:
-          "qza/{cohort}/{id}-seq.qza"
+          "results/{cohort}/{id}-seq.qza"
      output:
-          "qza/{cohort}/tree/{id}-seqaligned.qza"
+          "results/{cohort}/tree/{id}-seqaligned.qza"
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"
      message:
@@ -267,9 +267,9 @@ rule mafft:
 
 rule alignment_mask:
      input:
-          "qza/{cohort}/tree/{id}-seqaligned.qza"
+          "results/{cohort}/tree/{id}-seqaligned.qza"
      output:
-          "qza/{cohort}/tree/{id}-seqaligned-masked.qza"
+          "results/{cohort}/tree/{id}-seqaligned-masked.qza"
      message:
           "Alignment mask"
      conda: 
@@ -281,9 +281,9 @@ rule alignment_mask:
 
 rule fasttree:
      input:
-          "qza/{cohort}/tree/{id}-seqaligned-masked.qza"
+          "results/{cohort}/tree/{id}-seqaligned-masked.qza"
      output:
-          "qza/{cohort}/tree/{id}_fasttree.qza"
+          "results/{cohort}/tree/{id}_fasttree.qza"
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"
      message:
@@ -297,9 +297,9 @@ rule fasttree:
 
 rule midpoint_root:
      input:
-          "qza/{cohort}/tree/{id}_fasttree.qza"
+          "results/{cohort}/tree/{id}_fasttree.qza"
      output:
-          "qza/{cohort}/{id}_fasttree_rooted.qza"
+          "results/{cohort}/{id}_fasttree_rooted.qza"
      message:
           "Midpoint rooting the tree"
      conda: 
@@ -312,15 +312,15 @@ rule midpoint_root:
 
 rule export_tree:
      input:
-          "qza/{cohort}/{id}_fasttree_rooted.qza"
+          "results/{cohort}/{id}_fasttree_rooted.qza"
      output:
-          "qza/{cohort}/{id}_fasttree.nwk"
+          "results/{cohort}/{id}_fasttree.nwk"
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"
      message:
           "Save the tree.nwk file"
      params:
-          "qza/{cohort}/{id}_fasttree_rooted"
+          "results/{cohort}/{id}_fasttree_rooted"
      shell:
           """qiime tools export \
                --input-path {input} \
@@ -332,10 +332,10 @@ rule export_tree:
 
 rule make_biom:
      input:
-          table="qza/{cohort}/{id}-table_rrf{r}.qza",
-          taxonomy="qza/{cohort}/{id}_cls-{cls}_taxonomy.qza"
+          table="results/{cohort}/{id}-table_rrf{r}.qza",
+          taxonomy="results/{cohort}/{id}_cls-{cls}_taxonomy.qza"
      output:
-          "qza/{cohort}/{id}_cls-{cls}_rrf{r}.biom"
+          "results/{cohort}/{id}_cls-{cls}_rrf{r}.biom"
      message:
           "Making biom table {output}"
      conda: 
@@ -349,10 +349,10 @@ rule make_biom:
 
 rule export_phyloseq:
      input:
-          biom="qza/{cohort}/{id}_cls-{cls}_rrf{r}.biom",
-          tree="qza/{cohort}/{id}_fasttree.nwk"
+          biom="results/{cohort}/{id}_cls-{cls}_rrf{r}.biom",
+          tree="results/{cohort}/{id}_fasttree.nwk"
      output:
-          "qza/{cohort}/{id}_cls-{cls}_rrf{r}_phyloseq.RDS"
+          "results/{cohort}/{id}_cls-{cls}_rrf{r}_phyloseq.RDS"
      conda:
           "envs/phyloseq.yml"
      shell:
@@ -360,10 +360,10 @@ rule export_phyloseq:
           
 rule weighted_unifrac:
      input:
-          table="qza/{cohort}/{id}-table_rrf{r}.qza",
-          tree="qza/{cohort}/{id}_fasttree_rooted.qza"
+          table="results/{cohort}/{id}-table_rrf{r}.qza",
+          tree="results/{cohort}/{id}_fasttree_rooted.qza"
      output:
-          "qza/{cohort}/{id}_rrf{r}_weightedunifrac.qza"
+          "results/{cohort}/{id}_rrf{r}_weightedunifrac.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -373,10 +373,10 @@ rule weighted_unifrac:
 
 rule unweighted_unifrac:
      input:
-          table="qza/{cohort}/{id}-table_rrf{r}.qza",
-          tree="qza/{cohort}/{id}_fasttree_rooted.qza"
+          table="results/{cohort}/{id}-table_rrf{r}.qza",
+          tree="results/{cohort}/{id}_fasttree_rooted.qza"
      output:
-          "qza/{cohort}/{id}_rrf{r}_unweightedunifrac.qza"
+          "results/{cohort}/{id}_rrf{r}_unweightedunifrac.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -386,9 +386,9 @@ rule unweighted_unifrac:
 
 rule extract_taxonomy_csv:
      input:
-          "qza/{cohort}/{id}_taxonomy.qza"
+          "results/{cohort}/{id}_taxonomy.qza"
      output:
-          "qza/{cohort}/{id}_taxonomy.csv"
+          "results/{cohort}/{id}_taxonomy.csv"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -397,9 +397,9 @@ rule extract_taxonomy_csv:
 
 rule extract_dadatable_csv:
      input:
-          "qza/{cohort}/{id}-table_rrf{r}.qza"           
+          "results/{cohort}/{id}-table_rrf{r}.qza"           
      output:
-          "qza/{cohort}/{id}-table_rrf{r}.csv"
+          "results/{cohort}/{id}-table_rrf{r}.csv"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -408,9 +408,9 @@ rule extract_dadatable_csv:
 
 rule extract_unifrac_csv:
      input:
-          "qza/{cohort}/{id}unifrac.qza"           
+          "results/{cohort}/{id}unifrac.qza"           
      output:
-          "qza/{cohort}/{id}unifrac.csv"
+          "results/{cohort}/{id}unifrac.csv"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -420,10 +420,10 @@ rule extract_unifrac_csv:
 
 rule merge_dadatable:
      input:
-          f1="qza/{cohort1}/{cohort1}_{id}-table_rrf{r}.qza",
-          f2="qza/{cohort2}/{cohort2}_{id}-table_rrf{r}.qza"
+          f1="results/{cohort1}/{cohort1}_{id}-table_rrf{r}.qza",
+          f2="results/{cohort2}/{cohort2}_{id}-table_rrf{r}.qza"
      output:
-          "qza/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}-table_rrf{r}.qza"
+          "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}-table_rrf{r}.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -434,10 +434,10 @@ rule merge_dadatable:
 
 rule merge_dadaseq:
      input:
-          f1="qza/{cohort1}/{cohort1}_{id}-seq.qza",
-          f2="qza/{cohort2}/{cohort2}_{id}-seq.qza"
+          f1="results/{cohort1}/{cohort1}_{id}-seq.qza",
+          f2="results/{cohort2}/{cohort2}_{id}-seq.qza"
      output:
-          "qza/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}-seq.qza"
+          "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}-seq.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -450,10 +450,10 @@ rule merge_taxonomy:
      priority:
           1
      input:
-          f1="qza/{cohort1}/{cohort1}_{id}_taxonomy.qza",
-          f2="qza/{cohort2}/{cohort2}_{id}_taxonomy.qza"
+          f1="results/{cohort1}/{cohort1}_{id}_taxonomy.qza",
+          f2="results/{cohort2}/{cohort2}_{id}_taxonomy.qza"
      output:
-          "qza/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}_taxonomy.qza"
+          "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}_taxonomy.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -464,9 +464,9 @@ rule merge_taxonomy:
 
 rule alpha_diversity:
      input:
-          "qza/{cohort}/{id}-table_rrf{r}.qza"
+          "results/{cohort}/{id}-table_rrf{r}.qza"
      output:
-          "qza/{cohort}/{id}_rrf{r}_alphadiversity.tsv"
+          "results/{cohort}/{id}_rrf{r}_alphadiversity.tsv"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"          
      shell:
@@ -475,13 +475,13 @@ rule alpha_diversity:
 
 rule manta:
      input:
-          taxonomy="qza/{cohort}/{id}_cls-{cls}_taxonomy.csv",
-          abundancy="qza/{cohort}/{id}_dadatable_rrf{r}.csv",
-          wunifrac="qza/{cohort}/{id}_rrf{r}_weightedunifrac.csv",
-          uwunifrac="qza/{cohort}/{id}_rrf{r}_unweightedunifrac.csv"
+          taxonomy="results/{cohort}/{id}_cls-{cls}_taxonomy.csv",
+          abundancy="results/{cohort}/{id}_dadatable_rrf{r}.csv",
+          wunifrac="results/{cohort}/{id}_rrf{r}_weightedunifrac.csv",
+          uwunifrac="results/{cohort}/{id}_rrf{r}_unweightedunifrac.csv"
 
      output:
-          "qza/{cohort}/manta/{id}_cls-{cls}_rrf{r}.zip"
+          "results/{cohort}/manta/{id}_cls-{cls}_rrf{r}.zip"
      shell:
           "zip -j {output} {input}"
 
