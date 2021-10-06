@@ -58,16 +58,18 @@ rule qza_fastqc:
      Action: Run fastqc quality control analysis
      """
      input:
-          files = get_allfile_names
+          "temp/{cohort}/{cohort}_{etc}/"          
      output:
           directory("quality/{cohort}/{cohort}_{etc}/fastqc/")
      threads:
           20
      conda:
           "envs/quality.yml"
+     parameters:
+          get_allfile_names
      shell:
           "mkdir {output} && "
-          "fastqc -o {output} -f fastq -t {threads} {input.files}"
+          "fastqc -o {output} -f fastq -t {threads} {parameters}"
 
 rule qza_multiqc:
      input:
