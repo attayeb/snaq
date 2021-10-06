@@ -61,7 +61,7 @@ rule qza_fastqc:
           folder = "temp/{cohort}/{id}",
           files = get_allfile_names
      output:
-          directory("quality/{cohort}/{id}")
+          directory("quality/{cohort}/{id}/fastqc/")
      threads:
           20
      conda:
@@ -69,6 +69,17 @@ rule qza_fastqc:
      shell:
           "mkdir {output} && "
           "fastqc -o {output} -f fastq -t {threads} {input.files}"
+
+rule multiqc:
+     input:
+          "quality/{cohort}/{id}/fastqc/"
+     output:
+          directory("quality/{cohort}/{id}/multiqc/")
+     conda:
+          "envs/quality.yml"
+     shell:
+          "multiqc -o {output} {input}"
+
 
 rule fastqc:
      """  Fastqc
