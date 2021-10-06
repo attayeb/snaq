@@ -235,7 +235,7 @@ rule taxonomy:
           refseq = "qza/{cohort}/{id}-seq.qza",
 	     classifier = "classifiers/{cls}-classifier.qza"
      output:
-          taxonomy= "qza/{cohort}/{id}_cl-{cls}_taxonomy.qza",
+          taxonomy= "qza/{cohort}/{id}_cls-{cls}_taxonomy.qza",
 	#table = "qza/{resfseq}_{cls}_table.qzv"
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"
@@ -335,7 +335,7 @@ rule make_biom:
           table="qza/{cohort}/{id}-table-rrf{r}.qza",
           taxonomy="qza/{cohort}/{id}_cls-{cls}_taxonomy.qza"
      output:
-          "qza/{cohort}/{id}_{cls}_rrf{r}.biom"
+          "qza/{cohort}/{id}_cls-{cls}_rrf{r}.biom"
      message:
           "Making biom table {output}"
      conda: 
