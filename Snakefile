@@ -146,6 +146,20 @@ rule cutadapt:
           "--o-trimmed-sequences {output}"
 
 
+rule trim_fastp:
+     input:
+          qza="results/{cohort}/{cohort}_{etc}.qza"
+     output:
+          "results/{cohort}/{cohort}_{etc}_fp-f{len1}-r{len2}.qza"
+     message:
+          "Trimming using fastp"
+     params:
+          lambda wildcards, output: output[0].replace(".qza", ".log")
+     conda: 
+          "envs/qiime2-latest-py38-linux-conda.yml"
+     shell:
+          "python scripts/fastp.py -i {input} --len1 {wildcareds.len1} --len2 {wildcards.len2} -o {output} > {params}"
+
 
 rule trim_bbduk:
      input:
