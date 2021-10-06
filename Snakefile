@@ -61,7 +61,7 @@ rule qza_fastqc:
           folder = "temp/{cohort}/{cohort}_{etc}",
           files = get_allfile_names
      output:
-          directory("quality/{cohort}/{cohort}_{id}/fastqc/")
+          directory("quality/{cohort}/{cohort}_{etc}/fastqc/")
      threads:
           20
      conda:
