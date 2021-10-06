@@ -70,7 +70,7 @@ rule qza_fastqc:
           "mkdir {output} && "
           "fastqc -o {output} -f fastq -t {threads} {input.files}"
 
-rule multiqc:
+rule qza_multiqc:
      input:
           "quality/{cohort}/{id}/fastqc/"
      output:
