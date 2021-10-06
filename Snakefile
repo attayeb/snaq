@@ -311,7 +311,7 @@ rule export_artifact:
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
-          "qiime tools extract "
+          "qiime tools export "
           "--input-path {input} "
           "--output-path {output}"
 
