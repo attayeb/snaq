@@ -307,7 +307,7 @@ rule export_artifact:
      input:
           "qza/{cohort}/{id}.qza"
      output:
-          "temp/{cohort}/{id}/"
+          directory("temp/{cohort}/{id}")
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
