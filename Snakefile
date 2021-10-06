@@ -151,7 +151,7 @@ rule trim_fastp:
      input:
           qza="results/{cohort}/{cohort}_raw.qza"
      output:
-          "results/{cohort}/{cohort}_fp-f{len1}-r{len2}.qza"
+          "results/{cohort}/{cohort}_fp-f{len1}-r{len2}c.qza"
      message:
           "Trimming using fastp"
      conda: 
