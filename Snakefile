@@ -30,7 +30,7 @@ rule export_artifact:
 def get_allfile_names(wildcards):
      """Get all files from a foler"""
      input_folder = os.path.join("temp", wildcards.cohort, wildcards.cohort+"_"+wildcards.etc)
-     return [os.path.join(input_folder, x) for x in os.listdir(input_folder) if "fastq" in x]
+     return " ".join([os.path.join(input_folder, x) for x in os.listdir(input_folder) if "fastq" in x])
 
 
 rule print_help:
@@ -58,7 +58,7 @@ rule qza_fastqc:
      Action: Run fastqc quality control analysis
      """
      input:
-          "temp/{cohort}/{cohort}_{etc}/"          
+          "temp/{cohort}/{cohort}_{etc}"          
      output:
           directory("quality/{cohort}/{cohort}_{etc}/fastqc/")
      threads:
