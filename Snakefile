@@ -473,10 +473,10 @@ rule alpha_diversity:
           "python scripts/alpha_diversity.py --inp {input} "
           "--outp {output}"
 
-rule summarized:
+rule summary:
      input:
           taxonomy="results/{cohort}/{id}_cls-{cls}_taxonomy.csv",
-          abundancy="results/{cohort}/{id}_dadatable_rrf{r}.csv",
+          abundancy="results/{cohort}/{id}-table_rrf{r}.csv",
           wunifrac="results/{cohort}/{id}_rrf{r}_weightedunifrac.csv",
           uwunifrac="results/{cohort}/{id}_rrf{r}_unweightedunifrac.csv"
 
