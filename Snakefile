@@ -16,9 +16,9 @@ rule explain:
 
 rule export_artifact:
      input:
-          "results/{cohort}/{id}.qza"
+          "results/{cohort}/{cohort}_{etc}.qza"
      output:
-          directory("temp/{cohort}/{id}")
+          directory("temp/{cohort}/{cohort}_{etc}/")
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
