@@ -332,7 +332,7 @@ rule export_tree:
 
 rule make_biom:
      input:
-          table="qza/{cohort}/{id}-table-rrf{r}.qza",
+          table="qza/{cohort}/{id}-table_rrf{r}.qza",
           taxonomy="qza/{cohort}/{id}_cls-{cls}_taxonomy.qza"
      output:
           "qza/{cohort}/{id}_cls-{cls}_rrf{r}.biom"
@@ -423,7 +423,7 @@ rule merge_dadatable:
           f1="qza/{cohort1}/{cohort1}_{id}-table_rrf{r}.qza",
           f2="qza/{cohort2}/{cohort2}_{id}-table_rrf{r}.qza"
      output:
-          "qza/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}_table-rrf{r}.qza"
+          "qza/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}-table_rrf{r}.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
