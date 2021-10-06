@@ -473,7 +473,7 @@ rule alpha_diversity:
           "python scripts/alpha_diversity.py --inp {input} "
           "--outp {output}"
 
-rule manta:
+rule summarized:
      input:
           taxonomy="results/{cohort}/{id}_cls-{cls}_taxonomy.csv",
           abundancy="results/{cohort}/{id}_dadatable_rrf{r}.csv",
@@ -481,7 +481,7 @@ rule manta:
           uwunifrac="results/{cohort}/{id}_rrf{r}_unweightedunifrac.csv"
 
      output:
-          "results/{cohort}/manta/{id}_cls-{cls}_rrf{r}.zip"
+          "results/{cohort}/{id}_cls-{cls}_rrf{r}.zip"
      shell:
           "zip -j {output} {input}"
 
