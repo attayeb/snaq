@@ -29,7 +29,7 @@ rule export_artifact:
 
 def get_allfile_names(wildcards):
      """Get all files from a foler"""
-     input_folder = os.path.join("data", wildcards.cohort)
+     input_folder = os.path.join("temp", wildcards.cohort, wildcards.id)
      return [os.path.join(input_folder, x) for x in os.listdir(input_folder)]
 
 
