@@ -352,7 +352,7 @@ rule export_phyloseq:
           biom="qza/{cohort}/{id}_cls-{cls}_rrf{r}.biom",
           tree="qza/{cohort}/{id}_fasttree.nwk"
      output:
-          "qza/{cohort}/{id}_cls-{cls}_{r}r_phyloseq.RDS"
+          "qza/{cohort}/{id}_cls-{cls}_rrf{r}_phyloseq.RDS"
      conda:
           "envs/phyloseq.yml"
      shell:
