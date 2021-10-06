@@ -58,7 +58,6 @@ rule qza_fastqc:
      Action: Run fastqc quality control analysis
      """
      input:
-          folder = directory("temp/{cohort}/{cohort}_{etc}/"),
           files = get_allfile_names
      output:
           directory("quality/{cohort}/{cohort}_{etc}/fastqc/")
