@@ -154,12 +154,10 @@ rule trim_fastp:
           "results/{cohort}/{cohort}_fp-f{len1}-r{len2}.qza"
      message:
           "Trimming using fastp"
-     params:
-          lambda wildcards, output: output[0].replace(".qza", ".log")
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
-          "python scripts/fastp.py --inputf {input} --len1 {wildcards.len1} --len2 {wildcards.len2} --outputf {output} > {params}"
+          "python scripts/fastp.py --inputf {input} --len1 {wildcards.len1} --len2 {wildcards.len2} --outputf {output}"
 
 
 rule trim_bbduk:
@@ -501,6 +499,6 @@ rule summary:
      shell:
           "zip -j {output} {input}"
 
-
+ruleorder: trim_fastp > trim_bbduk
 ruleorder: taxonomy > merge_taxonomy 
 ruleorder: rarefy > merge_dadatable
