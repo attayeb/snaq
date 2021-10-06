@@ -210,7 +210,7 @@ rule deblur:
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"    
      shell:
-          "qiime deblur denoise-paired "          
+          "qiime deblur denoise-16S "          
 	     "--i-demultiplexed-seqs {input} "
 	     "--p-trim-length -1 "
           "--o-table {output.table} "
