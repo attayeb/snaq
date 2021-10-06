@@ -478,7 +478,9 @@ rule summary:
           taxonomy="results/{cohort}/{id}_cls-{cls}_taxonomy.csv",
           abundancy="results/{cohort}/{id}-table_rrf{r}.csv",
           wunifrac="results/{cohort}/{id}_rrf{r}_weightedunifrac.csv",
-          uwunifrac="results/{cohort}/{id}_rrf{r}_unweightedunifrac.csv"
+          uwunifrac="results/{cohort}/{id}_rrf{r}_unweightedunifrac.csv",
+          biom="results/{cohort}/{id}_cls-{cls}_rrf{r}.biom",
+          phyloseq="results/{cohort}/{id}_cls-{cls}_rrf{r}"
 
      output:
           "results/{cohort}/{id}_cls-{cls}_rrf{r}.zip"
