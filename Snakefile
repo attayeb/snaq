@@ -14,10 +14,24 @@ rule explain:
           "cat {input}"
 
 
+rule export_artifact:
+     input:
+          "qza/{cohort}/{id}.qza"
+     output:
+          directory("temp/{cohort}/{id}")
+     conda:
+          "envs/qiime2-latest-py38-linux-conda.yml"
+     shell:
+          "qiime tools export "
+          "--input-path {input} "
+          "--output-path {output}"
+
+
 def get_allfile_names(wildcards):
      """Get all files from a foler"""
      input_folder = os.path.join("data", wildcards.cohort)
      return [os.path.join(input_folder, x) for x in os.listdir(input_folder)]
+
 
 rule print_help:
      """  Print help
@@ -35,9 +49,26 @@ rule print_help:
                except:
                     pass
           
-          
-          
 
+
+rule qza_fastqc:
+     """  Fastqc
+     Input: Fastq files
+     Output: fastq report html file.
+     Action: Run fastqc quality control analysis
+     """
+     input:
+          folder = "temp/{cohort}/{id}"
+          files = get_allfile_names
+     output:
+          directory("quality/{cohort}/{id}")
+     threads:
+          20
+     conda:
+          "envs/quality.yml"
+     shell:
+          "mkdir {output} && "
+          "fastqc -o {output} -f fastq -t {threads} {input.files}"
 
 rule fastqc:
      """  Fastqc
@@ -303,17 +334,6 @@ rule make_biom:
           "--taxonomy {input.taxonomy} "
           "--output {output}"
 
-rule export_artifact:
-     input:
-          "qza/{cohort}/{id}.qza"
-     output:
-          directory("temp/{cohort}/{id}")
-     conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
-     shell:
-          "qiime tools export "
-          "--input-path {input} "
-          "--output-path {output}"
 
 
 rule export_phyloseq:
