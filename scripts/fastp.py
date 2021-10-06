@@ -43,7 +43,7 @@ def fastp_trim(artifact, len1, len2):
 
         cmd = ['fastp', '--in1', fwd_fp, '--in2', rev_fp,
         '-Q', "--trim_front1", str(len1), "--trim_front2", str(len2), 
-        '--out1',  p1, '-out2', p2]
+        '--out1',  p1, '--out2', p2]
         run_command(cmd)
         os.remove(os.path.join(result.path, "fastp.json"))
         os.remove(os.path.join(result.path, "fastp.html"))
