@@ -303,6 +303,19 @@ rule make_biom:
           "--taxonomy {input.taxonomy} "
           "--output {output}"
 
+rule export_artifact:
+     input:
+          "qza/{cohort}/{id}.qza"
+     output:
+          "temp/{cohort}/{id}/"
+     conda:
+          "envs/qiime2-latest-py38-linux-conda.yml"
+     shell:
+          "qiime tools extract "
+          "--input-path {input} "
+          "--output-path {ouput}"
+
+
 rule export_phyloseq:
      input:
           biom="qza/{cohort}/{id}_{cls}_rrf{r}.biom",
