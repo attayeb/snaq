@@ -205,7 +205,7 @@ rule deblur:
 	     stats="results/{cohort}/{cohort}_{etc}_db-stats.qza",
 	     repseq="results/{cohort}/{cohort}_{etc}_db-seq.qza"
      message:
-          "Dada2 analysis"
+          "Deblur analysis analysis"
      threads: 30
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"    
@@ -215,8 +215,8 @@ rule deblur:
 	     "--p-trim-length -1 "
           "--o-table {output.table} "
 	     "--o-representative-sequences {output.repseq} "
-	     "--o-denoising-stats {output.stats} "
-	     "--verbose --p-n-threads {threads}"
+	     "--o-stats {output.stats} "
+	     "--verbose --p-jobs-to-start {threads}"
 
 rule rarefy:
      input:
