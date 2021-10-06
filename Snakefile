@@ -480,7 +480,7 @@ rule summary:
           wunifrac="results/{cohort}/{id}_rrf{r}_weightedunifrac.csv",
           uwunifrac="results/{cohort}/{id}_rrf{r}_unweightedunifrac.csv",
           biom="results/{cohort}/{id}_cls-{cls}_rrf{r}.biom",
-          phyloseq="results/{cohort}/{id}_cls-{cls}_rrf{r}"
+          phyloseq="results/{cohort}/{id}_cls-{cls}_rrf{r}.RDS"
 
      output:
           "results/{cohort}/{id}_cls-{cls}_rrf{r}.zip"
