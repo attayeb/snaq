@@ -181,9 +181,9 @@ rule dada2:
      input:
           "results/{cohort}/{cohort}_{etc}.qza"
      output:
-          table="results/{cohort}/{cohort}_{etc}_dd-f{f}-r{r}-table_rrf0.qza",
-	     stats="results/{cohort}/{cohort}_{etc}_dd-f{f}-r{r}-stats.qza",
-	     ref_seq="results/{cohort}/{cohort}_{etc}_dd-f{f}-r{r}-seq.qza"
+          table="results/{cohort}/{cohort}_{etc}_dd-table_rrf0.qza",
+	     stats="results/{cohort}/{cohort}_{etc}_dd-stats.qza",
+	     ref_seq="results/{cohort}/{cohort}_{etc}_dd-seq.qza"
      message:
           "Dada2 analysis"
      threads: 30
@@ -191,7 +191,6 @@ rule dada2:
           "envs/qiime2-latest-py38-linux-conda.yml"    
      shell:
           "qiime dada2 denoise-paired "
-	     "--p-trim-left-f {wildcards.f} --p-trim-left-r {wildcards.r} "
 	     "--p-trunc-len-f 0 --p-trunc-len-r 0 "
 	     "--i-demultiplexed-seqs {input} "
 	     "--o-table {output.table} "
