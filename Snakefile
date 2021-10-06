@@ -148,9 +148,9 @@ rule cutadapt:
 
 rule trim_fastp:
      input:
-          qza="results/{cohort}/{id}_raw.qza"
+          qza="results/{cohort}/{cohort}_raw.qza"
      output:
-          "results/{cohort}/{id}_fp-f{len1}-r{len2}.qza"
+          "results/{cohort}/{cohort}_fp-f{len1}-r{len2}.qza"
      message:
           "Trimming using fastp"
      params:
