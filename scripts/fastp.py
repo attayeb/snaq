@@ -54,14 +54,14 @@ def fastp_trim(artifact, len1, len2):
     return Artifact.import_data('SampleData[PairedEndSequencesWithQuality]', result)
 
 @click.command()
-@click.option("-i", required=True, type=str)
+@click.option("-i", "--inputf", required=True, type=str)
 @click.option("--len1", required=True, type=int)
 @click.option("--len2", required=True, type=int)
-@click.option("-o", required=True, type=str)
-def analyze():
-    art = Artifact.load(i)
+@click.option("-o", "--outputf", required=True, type=str)
+def analyze(inputf, len1, len2, outputf):
+    art = Artifact.load(inputf)
     trimmed = fastp_trim(art, len1, len2)
-    trimmed.save(o)
+    trimmed.save(outputf)
 
 if __name__ == "__main__":
     analyze()
