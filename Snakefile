@@ -233,9 +233,9 @@ rule rarefy:
 
 rule plot_dada_stats:
      input:
-          "results/{cohort}/{id}-stats.qza"
+          "results/{cohort}/{id}_dd-stats.qza"
      output:
-          "results/{cohort}/plots/{id}-stats.pdf"
+          "results/{cohort}/plots/{id}_dd-stats.pdf"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
