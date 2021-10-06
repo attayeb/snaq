@@ -235,7 +235,7 @@ rule taxonomy:
           refseq = "qza/{cohort}/{id}-seq.qza",
 	     classifier = "classifiers/{cls}-classifier.qza"
      output:
-          taxonomy= "qza/{cohort}/{id}_{cls}_taxonomy.qza",
+          taxonomy= "qza/{cohort}/{id}_cl-{cls}_taxonomy.qza",
 	#table = "qza/{resfseq}_{cls}_table.qzv"
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"
@@ -333,7 +333,7 @@ rule export_tree:
 rule make_biom:
      input:
           table="qza/{cohort}/{id}-table-rrf{r}.qza",
-          taxonomy="qza/{cohort}/{id}_{cls}_taxonomy.qza"
+          taxonomy="qza/{cohort}/{id}_cls-{cls}_taxonomy.qza"
      output:
           "qza/{cohort}/{id}_{cls}_rrf{r}.biom"
      message:
@@ -349,10 +349,10 @@ rule make_biom:
 
 rule export_phyloseq:
      input:
-          biom="qza/{cohort}/{id}_{cls}_rrf{r}.biom",
+          biom="qza/{cohort}/{id}_cls-{cls}_rrf{r}.biom",
           tree="qza/{cohort}/{id}_fasttree.nwk"
      output:
-          "qza/{cohort}/{id}_{cls}_{r}r_phyloseq.RDS"
+          "qza/{cohort}/{id}_cls-{cls}_{r}r_phyloseq.RDS"
      conda:
           "envs/phyloseq.yml"
      shell:
@@ -466,7 +466,7 @@ rule alpha_diversity:
      input:
           "qza/{cohort}/{id}-table_rrf{r}.qza"
      output:
-          "qza/{cohort}/{id}_ttf{r}_alphadiversity.tsv"
+          "qza/{cohort}/{id}_rrf{r}_alphadiversity.tsv"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"          
      shell:
@@ -475,13 +475,13 @@ rule alpha_diversity:
 
 rule manta:
      input:
-          taxonomy="qza/{cohort}/{id}_{cls}_taxonomy.csv",
+          taxonomy="qza/{cohort}/{id}_cls-{cls}_taxonomy.csv",
           abundancy="qza/{cohort}/{id}_dadatable_rrf{r}.csv",
           wunifrac="qza/{cohort}/{id}_rrf{r}_weightedunifrac.csv",
           uwunifrac="qza/{cohort}/{id}_rrf{r}_unweightedunifrac.csv"
 
      output:
-          "qza/{cohort}/manta/{id}_{cls}_rrf{r}.zip"
+          "qza/{cohort}/manta/{id}_cls-{cls}_rrf{r}.zip"
      shell:
           "zip -j {output} {input}"
 
