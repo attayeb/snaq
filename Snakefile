@@ -313,7 +313,7 @@ rule export_artifact:
      shell:
           "qiime tools extract "
           "--input-path {input} "
-          "--output-path {ouput}"
+          "--output-path {output}"
 
 
 rule export_phyloseq:
