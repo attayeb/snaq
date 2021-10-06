@@ -158,7 +158,7 @@ rule trim_fastp:
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
-          "python scripts/fastp.py -i {input} --len1 {wildcareds.len1} --len2 {wildcards.len2} -o {output} > {params}"
+          "python scripts/fastp.py -i {input} --len1 {len1} --len2 {len2} -o {output} > {params}"
 
 
 rule trim_bbduk:
