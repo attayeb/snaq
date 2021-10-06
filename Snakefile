@@ -65,11 +65,11 @@ rule qza_fastqc:
           20
      conda:
           "envs/quality.yml"
-     parameters:
+     parameter:
           get_allfile_names
      shell:
           "mkdir {output} && "
-          "fastqc -o {output} -f fastq -t {threads} {parameters}"
+          "fastqc -o {output} -f fastq -t {threads} {parameter}"
 
 rule qza_multiqc:
      input:
