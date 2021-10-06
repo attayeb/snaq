@@ -253,9 +253,9 @@ rule taxonomy:
 
 rule mafft:
      input:
-          "qza/{cohort}/{id}_seq.qza"
+          "qza/{cohort}/{id}-seq.qza"
      output:
-          "qza/{cohort}/tree/{id}_seqaligned.qza"
+          "qza/{cohort}/tree/{id}-seqaligned.qza"
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"
      message:
@@ -267,9 +267,9 @@ rule mafft:
 
 rule alignment_mask:
      input:
-          "qza/{cohort}/tree/{id}_seqaligned.qza"
+          "qza/{cohort}/tree/{id}-seqaligned.qza"
      output:
-          "qza/{cohort}/tree/{id}_seqaligned_masked.qza"
+          "qza/{cohort}/tree/{id}-seqaligned-masked.qza"
      message:
           "Alignment mask"
      conda: 
@@ -281,7 +281,7 @@ rule alignment_mask:
 
 rule fasttree:
      input:
-          "qza/{cohort}/tree/{id}_seqaligned_masked.qza"
+          "qza/{cohort}/tree/{id}-seqaligned-masked.qza"
      output:
           "qza/{cohort}/tree/{id}_fasttree.qza"
      conda: 
