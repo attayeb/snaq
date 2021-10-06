@@ -147,6 +147,7 @@ rule cutadapt:
           "--o-trimmed-sequences {output}"
 
 
+
 rule trim_fastp:
      input:
           qza="results/{cohort}/{cohort}_raw.qza"
@@ -181,7 +182,7 @@ rule dada2:
      output:
           table="results/{cohort}/{cohort}_{etc}_dd-table_rrf0.qza",
 	     stats="results/{cohort}/{cohort}_{etc}_dd-stats.qza",
-	     ref_seq="results/{cohort}/{cohort}_{etc}_dd-seq.qza"
+	     repseq="results/{cohort}/{cohort}_{etc}_dd-seq.qza"
      message:
           "Dada2 analysis"
      threads: 30
@@ -192,7 +193,28 @@ rule dada2:
 	     "--p-trunc-len-f 0 --p-trunc-len-r 0 "
 	     "--i-demultiplexed-seqs {input} "
 	     "--o-table {output.table} "
-	     "--o-representative-sequences {output.ref_seq} "
+	     "--o-representative-sequences {output.repseq} "
+	     "--o-denoising-stats {output.stats} "
+	     "--verbose --p-n-threads {threads}"
+
+rule deblur:
+     input:
+          "results/{cohort}/{cohort}_{etc}.qza"
+     output:
+          table="results/{cohort}/{cohort}_{etc}_db-table_rrf0.qza",
+	     stats="results/{cohort}/{cohort}_{etc}_db-stats.qza",
+	     repseq="results/{cohort}/{cohort}_{etc}_db-seq.qza"
+     message:
+          "Dada2 analysis"
+     threads: 30
+     conda: 
+          "envs/qiime2-latest-py38-linux-conda.yml"    
+     shell:
+          "qiime dada2 denoise-paired "          
+	     "--i-demultiplexed-seqs {input} "
+	     "--p-trim-length -1 "
+          "--o-table {output.table} "
+	     "--o-representative-sequences {output.repseq} "
 	     "--o-denoising-stats {output.stats} "
 	     "--verbose --p-n-threads {threads}"
 
@@ -244,7 +266,7 @@ rule download_silvav34_classifier:
 
 rule taxonomy:
      input:
-          refseq = "results/{cohort}/{id}-seq.qza",
+          repseq = "results/{cohort}/{id}-seq.qza",
 	     classifier = "classifiers/{cls}-classifier.qza"
      output:
           taxonomy= "results/{cohort}/{id}_cls-{cls}_taxonomy.qza",
@@ -257,7 +279,7 @@ rule taxonomy:
      shell:
           "qiime feature-classifier classify-sklearn "
 	     "--i-classifier {input.classifier} "
-	     "--i-reads {input.refseq} --p-n-jobs {threads} "
+	     "--i-reads {input.repseq} --p-n-jobs {threads} "
 	     "--o-classification {output.taxonomy}"
 
 #tree
