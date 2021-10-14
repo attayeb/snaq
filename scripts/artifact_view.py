@@ -22,7 +22,7 @@ def export(artifact, filename, filetype):
 
     if filetype=="biom":
         with open(filename, "w") as f:
-            Artifact.load(artifact).view(biom.table.Table).to_jsoin(generated_by="QIIME2", direct_io=f)
+            Artifact.load(artifact).view(biom.table.Table).to_hdf5(generated_by="QIIME2", direct_io=f)
 
 
 if __name__ == "__main__":
