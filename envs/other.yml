@@ -3,9 +3,9 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  -python=3.9
-  -click=7.1.2
-  -seaborn=0.11.2
-  -seaborn-base=0.11.2
-  -pandas=1.2.5
-  -numpy=1.21.2
+  - python=3.9
+  - click=7.1.2
+  - seaborn=0.11.2
+  - seaborn-base=0.11.2
+  - pandas=1.2.5
+  - numpy=1.21.2
