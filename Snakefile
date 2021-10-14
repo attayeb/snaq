@@ -451,6 +451,19 @@ rule merge_taxonomy:
           "--i-data {input.f2} "
           "--o-merged-data {output}"
 
+rule create_metadata_file:
+     input:
+          "results/{cohort}/{cohort}_manifest.tsv"
+     output:
+          "results/{cohort}/{cohort}_metadata.tsv"
+     conda:
+          "envs/other.yml"
+     shell:
+          "python scripts/create_metadata_file.py -i {input} -o {output}"
+     
+          
+
+
 rule core_metrics:
      input:
           "results/{cohort}/{id}-table_rrf{r}.qza"
