@@ -1,4 +1,0 @@
-channels:
-        - qiime2
-dependencies:
-        - qiime2=2021.4.0

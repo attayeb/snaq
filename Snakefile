@@ -81,34 +81,15 @@ rule qza_multiqc:
      shell:
           "multiqc -o {output} {input}"
 
-
-#rule fastqc:
-#     """  Fastqc
-#     Input: Fastq files
-#     Output: fastq report html file.
-#     Action: Run fastqc quality control analysis
-#     """
-#     input:
-#          get_allfile_names
-#     output:
-#          directory("quality/{cohort}/fastqc/")
-#     threads:
-#          20
-#     conda:
-#          "envs/quality.yml"
-#     shell:
-#          "mkdir {output} && "
-#          "fastqc -o {output} -f fastq -t {threads} {input}"
-
-#rule multiqc:
-#     input:
-#          "quality/{cohort}/fastqc/"
-#     output:
-#          directory("quality/{cohort}/multiqc/")
-#     conda:
-#          "envs/quality.yml"
-#     shell:
-#          "multiqc -o {output} {input}"
+rule manifest:
+     input:
+          "data/{cohort}"
+     output:
+          "result/{cohort}/{cohort}_manifest.tsv"
+     conda:
+          "envs/other.yml"
+     shell:
+          "python scripts/create_manifest_file.py -i {input} -o {output}"
 
 rule import_data:
      """  Import data:
