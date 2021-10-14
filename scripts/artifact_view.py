@@ -4,7 +4,7 @@ from qiime2 import Metadata
 from skbio import DistanceMatrix
 import pandas as pd
 import biom
-        
+import json        
 
 @click.command()
 @click.option("--artifact")
@@ -22,7 +22,7 @@ def export(artifact, filename, filetype):
 
     if filetype=="biom":
         with open(filename, "w") as f:
-            Artifact.load(artifact).view(biom.Table).to_json(generated_by="QIIME2", direct_io=f)
+            json.dump(json.loads(Artifact.load(artifact).view(biom.Table).to_json(generated_by="QIIME2")), fp=f, indent=3)
 
 
 if __name__ == "__main__":
