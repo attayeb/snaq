@@ -109,7 +109,7 @@ rule import_data:
           "qiime tools import "
 	     "--type 'SampleData[PairedEndSequencesWithQuality]' "
 	     "--input-path {input} "
-	     "--input-format PairedEndFastqManifestPhred64V2 "
+	     "--input-format PairedEndFastqManifestPhred33V2 "
 	     "--output-path {output} "
 
 rule cutadapt:
