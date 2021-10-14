@@ -35,7 +35,7 @@ def create_manifest(input_folder, manifest_file_name):
     if all([condition2, condition3]):
         R1 = [abspath(x) for x in R1]
         R2 = [abspath(x) for x in R2]
-        res = {"sample_id": sample_id1,
+        res = {"sample-id": sample_id1,
                "forward-absolute-filepath": R1,
                "reverse-absolute-filepath": R2}
     pd.DataFrame(res).to_csv(manifest_file_name, sep="\t", index=False)
