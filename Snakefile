@@ -493,12 +493,15 @@ rule alpha_diversity:
 
 rule summary:
      input:
-          taxonomy="results/{cohort}/{id}_cls-{cls}_taxonomy.csv",
-          abundancy="results/{cohort}/{id}-table_rrf{r}.csv",
-          wunifrac="results/{cohort}/{id}_rrf{r}_weightedunifrac.csv",
-          uwunifrac="results/{cohort}/{id}_rrf{r}_unweightedunifrac.csv",
-          biom="results/{cohort}/{id}_cls-{cls}_rrf{r}.biom",
-          phyloseq="results/{cohort}/{id}_cls-{cls}_rrf{r}_phyloseq.RDS"
+          "results/{cohort}/{id}_cls-{cls}_taxonomy.csv",
+          "results/{cohort}/{id}-table_rrf{r}.csv",
+          "results/{cohort}/{id}_rrf{r}_weightedunifrac.csv",
+          "results/{cohort}/{id}_rrf{r}_unweightedunifrac.csv",
+          "results/{cohort}/{id}_cls-{cls}_rrf{r}.biom",
+          "results/{cohort}/{id}_cls-{cls}_rrf{r}_phyloseq.RDS",
+          "results/{cohort}/{id}_rrf{r}_coremetrics/observed_features_vector",
+          "results/{cohort}/{id}_rrf{r}_alphadiversity.tsv"
+
 
      output:
           "results/{cohort}/{id}_cls-{cls}_rrf{r}.zip"
