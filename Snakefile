@@ -8,8 +8,6 @@ How to run it:
 rule explain:
      input:
           "explain.txt"
-     log:
-          "a.log"
      shell:
           "cat {input}"
 
@@ -178,26 +176,6 @@ rule dada2:
 	     "--o-denoising-stats {output.stats} "
 	     "--verbose --p-n-threads {threads}"
 
-rule deblur:
-     input:
-          "results/{cohort}/{cohort}_{etc}.qza"
-     output:
-          table="results/{cohort}/{cohort}_{etc}_db-table_rrf0.qza",
-	     stats="results/{cohort}/{cohort}_{etc}_db-stats.qza",
-	     repseq="results/{cohort}/{cohort}_{etc}_db-seq.qza"
-     message:
-          "Deblur analysis analysis"
-     threads: 30
-     conda: 
-          "envs/qiime2-latest-py38-linux-conda.yml"    
-     shell:
-          "qiime deblur denoise-16S "          
-	     "--i-demultiplexed-seqs {input} "
-	     "--p-trim-length -1 "
-          "--o-table {output.table} "
-	     "--o-representative-sequences {output.repseq} "
-	     "--o-stats {output.stats} "
-	     "--verbose --p-jobs-to-start {threads}"
 
 rule rarefy:
      input:
