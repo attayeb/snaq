@@ -461,7 +461,7 @@ rule collapse_tax:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
           "qiime taxa collapse --i-table {input.table} "
-          "--p-level 6 "
+          "--p-level 7 "
           "--i-taxonomy {input.tax} "
           "--o-collapsed-table {output}"
 
