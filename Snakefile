@@ -317,20 +317,20 @@ rule export_tree:
           rm -r {params}"""
     
 
-rule make_biom:
-     input:
-          table="results/{cohort}/{id}-table_rrf{r}.qza",
-          taxonomy="results/{cohort}/{id}_cls-{cls}_taxonomy.qza"
-     output:
-          "results/{cohort}/{id}_cls-{cls}_rrf{r}.biom"
-     message:
-          "Making biom table {output}"
-     conda: 
-          "envs/qiime2-latest-py38-linux-conda.yml"
-     shell:
-          "python scripts/make_biom.py --tablef {input.table} "
-          "--taxonomy {input.taxonomy} "
-          "--output {output}"
+#rule make_biom:
+#     input:
+#          table="results/{cohort}/{id}-table_rrf{r}.qza",
+#          taxonomy="results/{cohort}/{id}_cls-{cls}_taxonomy.qza"
+#     output:
+#          "results/{cohort}/{id}_cls-{cls}_rrf{r}.biom"
+#     message:
+#          "Making biom table {output}"
+#     conda: 
+#          "envs/qiime2-latest-py38-linux-conda.yml"
+#     shell:
+#          "python scripts/make_biom.py --tablef {input.table} "
+#          "--taxonomy {input.taxonomy} "
+#          "--output {output}"
 
 rule extract_biom:
      input:
@@ -342,6 +342,7 @@ rule extract_biom:
      shell:
           "python scripts/artifact_view.py --artifact {input} "
           "--filename {output} --filetype biom"
+
 rule export_phyloseq:
      input:
           biom="results/{cohort}/{id}_cls-{cls}_rrf{r}.biom",

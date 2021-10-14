@@ -14,4 +14,6 @@ opt = parse_args(opt_parser)
 
 #print(opt$biom)
 ps <- phyloseq::import_biom(opt$biom, treefilename=opt$tree)
+
+
 saveRDS(ps, opt$outp)
