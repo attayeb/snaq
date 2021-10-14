@@ -455,7 +455,7 @@ rule core_metrics:
      input:
           "results/{cohort}/{id}-table_rrf{r}.qza"
      output:
-          directory("results/{cohort}/{core_metrics}")
+          directory("results/{cohort}/{id}_rrf{r}")
      threads:
           30
      conda:
