@@ -499,7 +499,6 @@ rule summary:
           "results/{cohort}/{id}_rrf{r}_unweightedunifrac.csv",
           "results/{cohort}/{id}_cls-{cls}_rrf{r}.biom",
           "results/{cohort}/{id}_cls-{cls}_rrf{r}_phyloseq.RDS",
-          "results/{cohort}/{id}_rrf{r}_coremetrics/observed_features_vector",
           "results/{cohort}/{id}_rrf{r}_alphadiversity.tsv"
 
 
