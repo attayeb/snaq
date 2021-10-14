@@ -29,6 +29,8 @@ def export(artifact, filename, filetype):
         meta__ = {}
         
         for k, v in meta_.items():
+            print("v")
+            print(v)
             meta__.update({k: {'taxonomy': v.split(';')}})
         
         art.add_metadata(meta__, axis='taxonomy')
