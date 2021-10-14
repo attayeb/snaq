@@ -453,10 +453,10 @@ rule merge_taxonomy:
 
 rule collapse_tax:
      input:
-          table="results/{cohort}/{cohort}_dd-table.qza"
+          table="results/{cohort}/{cohort}_dd-table_rrf{r}.qza"
           tax="results/{cohort}/{cohort}_dd_{etc}_taxonomy.qza"
      ouput:
-          "results/{cohort}/{cohort}_dd_{etc}_taxonomycollapsed.qza"
+          "results/{cohort}/{cohort}_dd_{etc}_rrf{r}_taxonomycollapsed.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
