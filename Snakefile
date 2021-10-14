@@ -462,7 +462,7 @@ rule core_metrics:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
           "qiime diversity core-metrics "
-          "--p-sampling-depth {wildcard.r} "
+          "--p-sampling-depth {wildcards.r} "
           "--i-table {input} "
           "--output-dir {output} "
           "--p-n-jobs {threads}"
