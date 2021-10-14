@@ -23,6 +23,7 @@ def export(artifact, filename, filetype):
     if filetype=="biom":
         taxonomy_levels = ['kingdum', 'phylum', 'class', 'order', 'family', 'genus', 'species']
         art = Artifact.load(artifact).view(biom.Table)
+        
         meta_ = {x['id']: x['id'].split(";") for x in json.loads(art.to_json("QIIME2"))['rows']}
 
         meta__ = {}
@@ -34,6 +35,8 @@ def export(artifact, filename, filetype):
                 meta__.update({k:current})
         
         art.add_metadata(meta__, axis='observation')
+        art.type = "OTU table"
+        art.remove_empty()
         with open(filename, "w") as f:
             f.write(art.to_json(generated_by="QIIME2"))
 
