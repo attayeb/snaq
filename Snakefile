@@ -466,7 +466,7 @@ rule collapse_tax:
           table="results/{cohort}/{cohort}_{id}_dd-table_rrf{r}.qza",
           tax="results/{cohort}/{cohort}_{id}_dd_{etc}_taxonomy.qza"
      output:
-          "results/{cohort}/{cohort}_{id}_dd_{etc}_rrf{r}_taxonomycollapsed.qza"
+          "results/{cohort}/{cohort}_{id}_dd_{etc}_rrf{r}_otu-tax.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
