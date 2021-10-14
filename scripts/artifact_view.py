@@ -29,7 +29,7 @@ def export(artifact, filename, filetype):
         meta__ = {}
         
         for k, v in meta_.items():
-            meta__[k]= {'taxonomy': v}
+            meta__[k]= {'id':k, 'taxonomy': v}
         
         print(meta__)
         art.add_metadata(meta__, axis='observation')
