@@ -33,8 +33,8 @@ def export(artifact, filename, filetype):
         
         art.add_metadata(meta__, axis='observation')
         art.type = "OTU table"
-        art.remove_empty()
-        print(art.metadata(axis='observation'))
+        #art.remove_empty()
+        #print(art.metadata(axis='observation'))
         with open(filename, "w") as f:
             f.write(art.to_json(generated_by="QIIME2"))
 
