@@ -22,7 +22,7 @@ def export(artifact, filename, filetype):
 
     if filetype=="biom":
         with open(filename, "w") as f:
-            json.dump(json.loads(Artifact.load(artifact).view(biom.Table).to_hdf5(generated_by="QIIME2")), fp=f, indent=3)
+            f.write(Artifact.load(artifact).view(biom.Table).to_json(generated_by="QIIME2"))
 
 
 if __name__ == "__main__":
