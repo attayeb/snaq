@@ -345,7 +345,7 @@ rule extract_biom:
 
 rule export_phyloseq:
      input:
-          biom="results/{cohort}/{id}_cls-{cls}_rrf{r}.biom",
+          biom="results/{cohort}/{id}_cls-{cls}_rrf{r}_otu-tax.biom",
           tree="results/{cohort}/{id}_fasttree.nwk"
      output:
           "results/{cohort}/{id}_cls-{cls}_rrf{r}_phyloseq.RDS"
@@ -522,7 +522,7 @@ rule summary:
           "results/{cohort}/{id}-table_rrf{r}.csv",
           "results/{cohort}/{id}_rrf{r}_weightedunifrac.csv",
           "results/{cohort}/{id}_rrf{r}_unweightedunifrac.csv",
-          "results/{cohort}/{id}_cls-{cls}_rrf{r}.biom",
+          "results/{cohort}/{id}_cls-{cls}_rrf{r}_otu-tax.biom",
           "results/{cohort}/{id}_cls-{cls}_rrf{r}_phyloseq.RDS",
           "results/{cohort}/{id}_rrf{r}_alphadiversity.tsv"
 
