@@ -29,10 +29,7 @@ def export(artifact, filename, filetype):
         meta__ = {}
         
         for k, v in meta_.items():
-            current = {}
-            for i in range(len(v)):
-                current[taxonomy_levels[i]] = v[i]
-                meta__.update({k: current})
+            meta__.update({k: {'taxonomy': v.split(';')}})
         
         art.add_metadata(meta__, axis='taxonomy')
         art.type = "OTU table"
