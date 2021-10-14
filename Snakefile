@@ -98,7 +98,7 @@ rule import_data:
      Action: Import the raw fastq files to Qiime2 artifact with qza 
      """
      input:
-          "data/{cohort}" 
+          "results/{cohort}/{cohort}_manifest.tsv" 
      output:
           "results/{cohort}/{cohort}_raw.qza"
      message:
@@ -109,7 +109,7 @@ rule import_data:
           "qiime tools import "
 	     "--type 'SampleData[PairedEndSequencesWithQuality]' "
 	     "--input-path {input} "
-	     "--input-format CasavaOneEightSingleLanePerSampleDirFmt "
+	     "--input-format PairedEndFastqManifestPhred64V2 "
 	     "--output-path {output} "
 
 rule cutadapt:
