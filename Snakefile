@@ -47,8 +47,6 @@ rule print_help:
                except:
                     pass
           
-
-
 rule qza_fastqc:
      """  Fastqc
      Input: Fastq files
@@ -317,7 +315,7 @@ rule export_tree:
           cp {params}/tree.nwk {output}
 
           rm -r {params}"""
-
+    
 
 rule make_biom:
      input:
@@ -334,8 +332,16 @@ rule make_biom:
           "--taxonomy {input.taxonomy} "
           "--output {output}"
 
-
-
+rule extract_biom:
+     input:
+          "results/{cohort}/{cohort}_{id}.qza"
+     output:
+          "results/{cohort}/{cohort}_{id}.biom"
+     conda:
+          "envs/qiime2-latest-py38-linux-conda.yml"
+     shell:
+          "python scripts/artifact_view.py --artifact {input} "
+          "--filename {output} --filetype biom"
 rule export_phyloseq:
      input:
           biom="results/{cohort}/{id}_cls-{cls}_rrf{r}.biom",
@@ -347,6 +353,7 @@ rule export_phyloseq:
      shell:
           "Rscript scripts/export_phyloseq.R --biom {input.biom} --tree {input.tree} --outp {output}"
           
+
 rule weighted_unifrac:
      input:
           table="results/{cohort}/{id}-table_rrf{r}.qza",
@@ -407,6 +414,8 @@ rule extract_unifrac_csv:
           "--filename {output} --filetype distance"
 
 
+
+
 rule merge_dadatable:
      input:
           f1="results/{cohort1}/{cohort1}_{id}-table_rrf{r}.qza",
@@ -464,6 +473,7 @@ rule collapse_tax:
           "--p-level 7 "
           "--i-taxonomy {input.tax} "
           "--o-collapsed-table {output}"
+
 
 rule create_metadata_file:
      input:

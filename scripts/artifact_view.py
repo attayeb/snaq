@@ -3,6 +3,7 @@ from qiime2 import Artifact
 from qiime2 import Metadata
 from skbio import DistanceMatrix
 import pandas as pd
+import biom
         
 
 @click.command()
@@ -18,6 +19,10 @@ def export(artifact, filename, filetype):
     if filetype=="distance":        
         df = Artifact.load(artifact).view(DistanceMatrix).to_data_frame()
         df.to_csv(filename)
+
+    if filetype=="biom":
+        with open(filename, "w") as f:
+            f.write(Artifact.load(artifact).view(biom.table.Table).to_tsv())
 
 
 if __name__ == "__main__":
