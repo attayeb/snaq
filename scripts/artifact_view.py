@@ -35,7 +35,7 @@ def export(artifact, filename, filetype):
         
         art.add_metadata(meta__, axis='observation')
         with open(filename, "w") as f:
-            f.write(f, art.to_json(generated_by="QIIME2"))
+            f.write(art.to_json(generated_by="QIIME2"))
 
 
 if __name__ == "__main__":
