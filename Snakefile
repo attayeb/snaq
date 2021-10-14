@@ -461,12 +461,11 @@ rule create_metadata_file:
      shell:
           "python scripts/create_metadata_file.py -i {input} -o {output}"
      
-          
-
 
 rule core_metrics:
      input:
-          "results/{cohort}/{id}-table_rrf{r}.qza"
+          table="results/{cohort}/{id}-table_rrf{r}.qza",
+          metadata="results/{cohort}/{cohort}_metadata.tsv"
      output:
           directory("results/{cohort}/{id}_rrf{r}_coremetrics/")
      threads:
@@ -476,7 +475,8 @@ rule core_metrics:
      shell:
           "qiime diversity core-metrics "
           "--p-sampling-depth {wildcards.r} "
-          "--i-table {input} "
+          "--i-table {input.table} "
+          "--m-metadata-file {input.metadata} "
           "--output-dir {output} "
           "--p-n-jobs {threads}"
 
