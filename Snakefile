@@ -241,8 +241,6 @@ rule taxonomy:
 	     "--i-reads {input.repseq} --p-n-jobs {threads} "
 	     "--o-classification {output.taxonomy}"
 
-#tree
-
 
 rule mafft:
      input:
@@ -285,8 +283,6 @@ rule fasttree:
           "qiime phylogeny fasttree "
           "--i-alignment {input} "
           "--o-tree {output}"
-          
-          
 
 rule midpoint_root:
      input:
@@ -454,6 +450,22 @@ rule merge_taxonomy:
           "--i-data {input.f1} "
           "--i-data {input.f2} "
           "--o-merged-data {output}"
+
+rule core_metrics:
+     input:
+          "results/{cohort}/{id}-table_rrf{r}.qza"
+     output:
+          directory("results/{cohort}/{core_metrics}")
+     threads:
+          30
+     conda:
+          "envs/qiime2-latest-py38-linux-conda.yml"
+     shell:
+          "qiime diversity core-metrics "
+          "--p-sampling-depth {wildcard.r} "
+          "--i-table {input} "
+          "--output-dir {output} "
+          "--p-n-jobs {threads}"
 
 rule alpha_diversity:
      input:
