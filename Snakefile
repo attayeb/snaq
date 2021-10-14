@@ -451,6 +451,20 @@ rule merge_taxonomy:
           "--i-data {input.f2} "
           "--o-merged-data {output}"
 
+rule collapse_tax:
+     input:
+          table="results/{cohort}/{cohort}_dd-table.qza"
+          tax="results/{cohort}/{cohort}_dd_{etc}_taxonomy.qza"
+     ouput:
+          "results/{cohort}/{cohort}_dd_{etc}_taxonomycollapsed.qza"
+     conda:
+          "envs/qiime2-latest-py38-linux-conda.yml"
+     shell:
+          "qiime taxa collapse --i-table {input.table} "
+          "--p-level 2 "
+          "--i-taxonomy {input.tax} "
+          "--o-collapsed-table {output}"
+
 rule create_metadata_file:
      input:
           "results/{cohort}/{cohort}_manifest.tsv"
