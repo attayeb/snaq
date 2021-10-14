@@ -15,7 +15,7 @@ identifiers = [{'R1':"_1", 'R2':"_2"},
 @click.option("-o", "metadata_file_name", required=True, type=str)
 def create_metadata_file(manifest_file_name, metadata_file_name):
     df = pd.read_csv(manifest_file_name, sep="\t")
-    df.drop(["forward-absolute-filepath", "reverse-absolute-filepath"], axis="columns")
+    df.drop(["forward-absolute-filepath", "reverse-absolute-filepath"], axis="columns", inplace=True)
     df.to_csv(metadata_file_name, sep="\t", index=False)
 
 if __name__ == "__main__":
