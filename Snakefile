@@ -85,7 +85,7 @@ rule manifest:
      input:
           "data/{cohort}"
      output:
-          "result/{cohort}/{cohort}_manifest.tsv"
+          "results/{cohort}/{cohort}_manifest.tsv"
      conda:
           "envs/other.yml"
      shell:
