@@ -27,3 +27,4 @@ db/
 *.csv
 *.qza
 *.fastq.gz
+test.txt

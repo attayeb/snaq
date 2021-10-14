@@ -33,10 +33,12 @@ def create_manifest(input_folder, manifest_file_name):
     
     condition3 = all([_r[0].replace(R1_id, "_")==_r[1].replace(R2_id, '_') for _r in zip(R1, R2)])
     if all([condition2, condition3]):
+        R1 = [abspath(x) for x in R1]
+        R2 = [abspath(x) for x in R2]
         res = {"sample_id": sample_id1,
                "forward-absolute-filepath": R1,
                "reverse-absolute-filepath": R2}
-    print(pd.DataFrame(res).to_csv(manifest_file_name, sep="\t", index=False))
+    pd.DataFrame(res).to_csv(manifest_file_name, sep="\t", index=False)
 
 if __name__ == "__main__":
     create_manifest()
