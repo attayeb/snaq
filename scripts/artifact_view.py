@@ -31,6 +31,7 @@ def export(artifact, filename, filetype):
         for k, v in meta_.items():
             meta__[k]= {'taxonomy': v}
         
+        print(meta__)
         art.add_metadata(meta__, axis='observation')
         art.type = "OTU table"
         #art.remove_empty()
