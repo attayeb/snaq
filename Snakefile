@@ -520,7 +520,7 @@ rule biom_to_tsv:
      input:
           "results/{cohort}/{id}.biom"
      output:
-          "resutls/{cohort}/{id}_biom.tsv"
+          "results/{cohort}/{id}_biom.tsv"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
