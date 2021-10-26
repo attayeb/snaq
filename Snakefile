@@ -535,4 +535,4 @@ rule summary:
 ruleorder: trim_bbduk > trim_fastp
 ruleorder: taxonomy > merge_taxonomy 
 ruleorder: rarefy > merge_dadatable
-ruleorder: export_phyloseq > extract_biom
+ruleorder: extract_biom > export_phyloseq 
