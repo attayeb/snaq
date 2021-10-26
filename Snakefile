@@ -345,7 +345,7 @@ rule extract_biom:
 
 rule export_phyloseq:
      input:
-          biom="results/{cohort}/{id}_cls-{cls}_rrf0_otu-tax.biom",
+          biom="results/{cohort}/{id}_cls-{cls}_rrf0.biom",
           tree="results/{cohort}/{id}_fasttree.nwk"
      output:
           "results/{cohort}/{id}_cls-{cls}_rrf0_phyloseq.RDS"
