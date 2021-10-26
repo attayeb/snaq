@@ -345,10 +345,10 @@ rule extract_biom:
 
 rule export_phyloseq:
      input:
-          biom="results/{cohort}/{id}_cls-{cls}_rrf{r}_otu-tax.biom",
+          biom="results/{cohort}/{id}_cls-{cls}_rrf0_otu-tax.biom",
           tree="results/{cohort}/{id}_fasttree.nwk"
      output:
-          "results/{cohort}/{id}_cls-{cls}_rrf{r}_phyloseq.RDS"
+          "results/{cohort}/{id}_cls-{cls}_rrf0_phyloseq.RDS"
      conda:
           "envs/phyloseq.yml"
      shell:
