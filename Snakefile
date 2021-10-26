@@ -536,3 +536,4 @@ ruleorder: trim_bbduk > trim_fastp
 ruleorder: taxonomy > merge_taxonomy 
 ruleorder: rarefy > merge_dadatable
 ruleorder: extract_biom > export_phyloseq 
+ruleorder: make_biom > extract_biom
