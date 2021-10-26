@@ -523,7 +523,7 @@ rule summary:
           "results/{cohort}/{id}_rrf{r}_weightedunifrac.csv",
           "results/{cohort}/{id}_rrf{r}_unweightedunifrac.csv",
           "results/{cohort}/{id}_cls-{cls}_rrf{r}_otu-tax.biom",
-          "results/{cohort}/{id}_cls-{cls}_rrf{0}_phyloseq.RDS",
+          "results/{cohort}/{id}_cls-{cls}_rrf0_phyloseq.RDS",
           "results/{cohort}/{id}_rrf{r}_alphadiversity.tsv"
 
 
