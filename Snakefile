@@ -516,6 +516,16 @@ rule alpha_diversity:
           "python scripts/alpha_diversity.py --inp {input} "
           "--outp {output}"
 
+rule biom_to_tsv:
+     input:
+          "results/{cohort}/{id}.biom"
+     output:
+          "resutls/{cohort}/{id}_biom.tsv"
+     conda:
+          "envs/qiime2-latest-py38-linux-conda.yml"
+     shell:
+          "biom convert -i {input} -o {output} --to-tsv"
+
 rule summary:
      input:
           "results/{cohort}/{id}_cls-{cls}_taxonomy.csv",
@@ -523,6 +533,7 @@ rule summary:
           "results/{cohort}/{id}_rrf{r}_weightedunifrac.csv",
           "results/{cohort}/{id}_rrf{r}_unweightedunifrac.csv",
           "results/{cohort}/{id}_cls-{cls}_rrf{r}_otu-tax.biom",
+          "results/{cohort}/{id}_cls-{cls}_rrf{r}_otu-tax_biom.tsv",
           "results/{cohort}/{id}_cls-{cls}_rrf0_phyloseq.RDS",
           "results/{cohort}/{id}_rrf{r}_alphadiversity.tsv"
 
