@@ -25,7 +25,6 @@ def get_rank_from_ncbi(rank, taxonomy, taxonpath):
 @click.option("-d", "database", required=True, type=str)
 def manta(input_file, output_file, taxonpath, names, database):
     df = pd.read_csv(input_file, sep="\t", skiprows=[0])
-    
     with open(taxonpath) as f:
         taxonpath=json.load(f)
     with open(names) as f:
@@ -35,8 +34,9 @@ def manta(input_file, output_file, taxonpath, names, database):
     d = pd.DataFrame(get_rank_from_ncbi(taxs, taxonomy, taxonpath))
     d.columns = ['0', '1', '2', '3', '4', '5', '6']
     df3 = d.join(df)
-    print(df3)
+    
     df3m = df3.melt(id_vars=['0', '1', '2', '3', '4', '5', '6'])
+    print(df3m)
     df3m = df3m.loc[:,['variable', '0', '1', '2', '3', '4', '5', '6', 'value']]
     df3m['pct'] = df3m['value']/10
     
