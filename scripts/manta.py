@@ -40,6 +40,6 @@ def manta(input_file, output_file, taxonpath, names, database):
     df3m['db'] = database
     df3m['method'] = 1
     df3m = df3m[df3m['value']!= 0]
-    df3m.to_csv(path_or_buf=output_file, header=None, index=None, sep="\t")
+    df3m.to_csv(output_file, header=None, index=None, sep="\t")
 
 
