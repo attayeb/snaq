@@ -535,7 +535,7 @@ rule manta:
      output:
           "results/{cohort}/{id}_cls{cls}_{etc}_manta.tsv"
      params:
-          db=1 if wildcards.cls=="gg" else 2
+          db=1 if wildcard.cls=="gg" else 2
      conda:
           "envs/other.yml"
      shell:
