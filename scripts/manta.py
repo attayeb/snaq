@@ -39,7 +39,7 @@ def manta(input_file, output_file, taxonpath, names, database):
     df3m = df3m.loc[:,['variable', 0, 1, 2, 3, 4, 5, 6, 'value']]
     df3m['pct'] = df3m['value']/10
     
-    df3m['db'] = database
+    df3m['db'] = int(database)
     df3m['method'] = 1
     df3m = df3m[df3m['value']!= 0]
     df3m.to_csv(output_file, header=None, index=None, sep="\t")
