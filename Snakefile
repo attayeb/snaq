@@ -343,6 +343,17 @@ rule extract_biom:
           "python scripts/artifact_view.py --artifact {input} "
           "--filename {output} --filetype biom"
 
+rule extract_sequence:
+     input:
+          "results/{cohort}/{cohort}_{id}_dd-seq.qza"
+     output:
+          "results/{cohort}/{cohort}_{id}_dd-seq.csv"
+     conda:
+          "envs/qiime2-latest-py38-linux-conda.yml"
+     shell:
+          "python scripts/artifact_view.py --artifact {input} "
+          "--filename {output} --filetype metadata"
+
 rule export_phyloseq:
      input:
           biom="results/{cohort}/{id}_cls-{cls}_rrf0.biom",
@@ -552,7 +563,8 @@ rule summary:
           "results/{cohort}/{id}_cls-{cls}_rrf{r}_otu-tax_biom.tsv",
           "results/{cohort}/{id}_cls-{cls}_rrf0_phyloseq.RDS",
           "results/{cohort}/{id}_rrf{r}_alphadiversity.tsv",
-          "results/{cohort}/{id}_cls-{cls}_rrf{r}_manta.tsv"
+          "results/{cohort}/{id}_cls-{cls}_rrf{r}_manta.tsv",
+          "results/{cohort}/{id}-seq.csv"
 
 
      output:
