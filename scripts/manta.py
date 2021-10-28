@@ -23,7 +23,8 @@ def get_rank_from_ncbi(rank, taxonomy, taxonpath):
 @click.option("-t", "taxonpath", required=True, type=str)
 @click.option("-n", "names", required=True, type=str)
 @click.option("-d", "database", required=True, type=str)
-def manta(input_file, output_file, taxonpath, names, database):
+@click.option("-r", "rarefaction", required=True, type=int)
+def manta(input_file, output_file, taxonpath, names, database, rarefaction):
     df = pd.read_csv(input_file, sep="\t", skiprows=[0])
     with open(taxonpath) as f:
         taxonpath=json.load(f)
@@ -40,7 +41,7 @@ def manta(input_file, output_file, taxonpath, names, database):
     
     df3m = df3m.loc[:,['variable', '0', '1', '2', '3', '4', '5', '6', 'value']]
     
-    df3m['pct'] = df3m['value']/10
+    df3m['pct'] = (df3m['value']/rarefaction)*100
     
     df3m['db'] = int(database)
     df3m['method'] = 1

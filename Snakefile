@@ -529,18 +529,18 @@ rule biom_to_tsv:
 
 rule manta:
      input:
-          tsv="results/{cohort}/{id}_cls-{cls}_{etc}_otu-tax_biom.tsv",
+          tsv="results/{cohort}/{id}_cls-{cls}_rrf{r}_otu-tax_biom.tsv",
           taxonpath="db/taxonpath.json",
           names="db/names.json"
      output:
-          "results/{cohort}/{id}_cls-{cls}_{etc}_manta.tsv"
+          "results/{cohort}/{id}_cls-{cls}_rrf{r}_manta.tsv"
      params:
           db=lambda wildcards: "1" if wildcards.cls=="gg" else "2"
      conda:
           "envs/other.yml"
      shell:
           "python scripts/manta.py -i {input.tsv} -o {output} "
-          "-t {input.taxonpath} -n {input.names} -d {params.db}"
+          "-t {input.taxonpath} -n {input.names} -d {params.db} -r {wildcards.r}"
 
 rule summary:
      input:
