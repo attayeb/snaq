@@ -551,7 +551,8 @@ rule summary:
           "results/{cohort}/{id}_cls-{cls}_rrf{r}_otu-tax.biom",
           "results/{cohort}/{id}_cls-{cls}_rrf{r}_otu-tax_biom.tsv",
           "results/{cohort}/{id}_cls-{cls}_rrf0_phyloseq.RDS",
-          "results/{cohort}/{id}_rrf{r}_alphadiversity.tsv"
+          "results/{cohort}/{id}_rrf{r}_alphadiversity.tsv",
+          "results/{cohort}/{id}_cls-{cls}_rrf{r}_manta.tsv"
 
 
      output:
