@@ -527,6 +527,18 @@ rule alpha_diversity:
           "python scripts/alpha_diversity.py --inp {input} "
           "--outp {output}"
 
+rule beta_diversity:
+     input:
+          "results/{cohort}/{id}_rrf{r}_otu-tax.qza"
+     output:
+          "results/{cohort}/{id}_rrf{r}_beta-braycurtis.tsv",
+          "results/{cohort}/{id}_rrf{r}_beta-jaccard.tsv",
+     params:
+          "results/{cohort}/{id}_rrf{r}_beta.tsv"
+     conda:
+          "envs/qiime2-latest-py38-linux-conda.yml"
+     shell:
+          "python scripts/beta_diversity.py --inp {input} --outp {params}"
 
 rule biom_to_tsv:
      input:
