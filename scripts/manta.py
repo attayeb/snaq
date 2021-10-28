@@ -25,7 +25,7 @@ def get_rank_from_ncbi(rank, taxonomy, taxonpath):
 @click.option("-d", "database", required=True, type=str)
 def manta(input_file, output_file, taxonpath, names, database):
     df = pd.read_csv(input_file, sep="\t", skiprows=[0])
-    print(df)
+    
     with open(taxonpath) as f:
         taxonpath=json.load(f)
     with open(names) as f:
