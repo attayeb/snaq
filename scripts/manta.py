@@ -33,7 +33,7 @@ def manta(input_file, output_file, taxonpath, names, database):
     taxs = [x.split(";") for x in df['#OTU ID']]
     d = pd.DataFrame(get_rank_from_ncbi(taxs, taxonomy, taxonpath))
     d.columns = ['0', '1', '2', '3', '4', '5', '6']
-    df.drop("#OTU ID", axis="column", inplace=True)
+    df.drop("#OTU ID", axis="columns", inplace=True)
     df3 = d.join(df)
     
     df3m = df3.melt(id_vars=['0', '1', '2', '3', '4', '5', '6'])
