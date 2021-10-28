@@ -516,6 +516,7 @@ rule alpha_diversity:
           "python scripts/alpha_diversity.py --inp {input} "
           "--outp {output}"
 
+
 rule biom_to_tsv:
      input:
           "results/{cohort}/{id}.biom"
@@ -525,6 +526,21 @@ rule biom_to_tsv:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
           "biom convert -i {input} -o {output} --to-tsv"
+
+rule manta:
+     input:
+          tsv="results/{cohort}/{id}_cls{cls}_{etc}_otu-tax_biom.tsv",
+          taxonpath="db/taxonpath.json",
+          names="db/names.json"
+     output:
+          "results/{cohort}/{id}_cls{cls}_{etc}_manta.tsv"
+     params:
+          db=1 if wildcards.cls=="gg" else 2
+     conda:
+          "envs/other.yml"
+     shell:
+          "python scripts/manta.py -i {input.tsv} -o {output} "
+          "-t {input.taxonpath} -n {input.names} -d {params.db}"
 
 rule summary:
      input:
