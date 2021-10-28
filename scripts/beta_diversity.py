@@ -7,7 +7,7 @@ from qiime2.plugins.diversity.pipelines import beta
 
 @click.command()
 @click.option("--inp")
-@click.option("--metrics", default=['braycurtis,jaccard'])
+@click.option("--metrics", default='braycurtis,jaccard')
 @click.option("--outp")
 def alpha_diversity(inp, metrics, outp):
     a = Artifact.load(inp)
