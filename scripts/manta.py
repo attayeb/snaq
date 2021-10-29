@@ -50,7 +50,7 @@ def manta(input_file, output_file, taxonpath, names, database, rarefaction, outp
     df3m = df3m[df3m['value']!= 0]
     df3m.to_csv(output_file, header=None, index=None, sep="\t")
 
-    df4['variable'] = df4['variable'] + 1
+    df4['variable'] = df4['variable'].astype(int) + 1
     df4 = df4[df4['value']!= "uc"]
     df4['names'] = [names.get(x) for x in df4['value']]
     df4.iloc[:,[1,0,2]].drop_duplicates().to_csv(output_taxonomy, index=None, header=None, sep="\t")
