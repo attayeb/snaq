@@ -556,13 +556,14 @@ rule manta:
           taxonpath="db/taxonpath.json",
           names="db/names.json"
      output:
-          "results/{cohort}/{id}_cls-{cls}_rrf{r}_manta.tsv"
+          full="results/{cohort}/{id}_cls-{cls}_rrf{r}_manta.tsv",
+          tax="results/{cohort}/{id}_cls-{cls}_rrf{r}_manta-tax.tsv"
      params:
           db=lambda wildcards: "1" if wildcards.cls=="gg" else "2"
      conda:
           "envs/other.yml"
      shell:
-          "python scripts/manta.py -i {input.tsv} -o {output} "
+          "python scripts/manta.py -i {input.tsv} -o {output.full} -x {output.tax} "
           "-t {input.taxonpath} -n {input.names} -d {params.db} -r {wildcards.r}"
 
 rule summary:

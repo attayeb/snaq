@@ -24,7 +24,8 @@ def get_rank_from_ncbi(rank, taxonomy, taxonpath):
 @click.option("-n", "names", required=True, type=str)
 @click.option("-d", "database", required=True, type=str)
 @click.option("-r", "rarefaction", required=True, type=int)
-def manta(input_file, output_file, taxonpath, names, database, rarefaction):
+@click.option("-x", "output_taxonomy", required=True, type=str)
+def manta(input_file, output_file, taxonpath, names, database, rarefaction, output_taxonomy):
     df = pd.read_csv(input_file, sep="\t", skiprows=[0])
     with open(taxonpath) as f:
         taxonpath=json.load(f)
@@ -38,7 +39,8 @@ def manta(input_file, output_file, taxonpath, names, database, rarefaction):
     df3 = d.join(df)
     
     df3m = df3.melt(id_vars=['0', '1', '2', '3', '4', '5', '6'])
-    
+    df4 = df3m.loc[:,[0,1,2,3,4,5,6]].copy().melt()
+
     df3m = df3m.loc[:,['variable', '0', '1', '2', '3', '4', '5', '6', 'value']]
     
     df3m['pct'] = (df3m['value']/rarefaction)*100
@@ -47,6 +49,11 @@ def manta(input_file, output_file, taxonpath, names, database, rarefaction):
     df3m['method'] = 1
     df3m = df3m[df3m['value']!= 0]
     df3m.to_csv(output_file, header=None, index=None, sep="\t")
+
+    df4['variable'] = df4['variable'] + 1
+    df4 = df4[df4['value']!= "uc"]
+    df4['names'] = [names.get(x) for x in df4['value']]
+    df4.iloc[:,[1,0,2]].drop_duplicates().to_csv(output_taxonomy, index=None, header=None, sep="\t")
 
 if __name__ == "__main__":
     manta()
