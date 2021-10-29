@@ -577,6 +577,7 @@ rule summary:
           "results/{cohort}/{id}_cls-{cls}_rrf0_phyloseq.RDS",
           "results/{cohort}/{id}_rrf{r}_alphadiversity.tsv",
           "results/{cohort}/{id}_cls-{cls}_rrf{r}_manta.tsv",
+          "results/{cohort}/{id}_cls-{cls}_rrf{r}_manta-tax.tsv",
           "results/{cohort}/{id}-seq.csv",
           "results/{cohort}/{id}_cls-{cls}_rrf{r}_beta-braycurtis.tsv",
           "results/{cohort}/{id}_cls-{cls}_rrf{r}_beta-jaccard.tsv",
