@@ -39,7 +39,7 @@ def manta(input_file, output_file, taxonpath, names, database, rarefaction, outp
     df3 = d.join(df)
     
     df3m = df3.melt(id_vars=['0', '1', '2', '3', '4', '5', '6'])
-    df4 = df3m.loc[:,[0,1,2,3,4,5,6]].copy().melt()
+    df4 = df3m.loc[:,['0', '1', '2', '3', '4', '5', '6']].copy().melt()
 
     df3m = df3m.loc[:,['variable', '0', '1', '2', '3', '4', '5', '6', 'value']]
     
