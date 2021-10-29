@@ -9,7 +9,7 @@ from qiime2.plugins.diversity.pipelines import beta
 @click.option("--inp")
 @click.option("--metrics", default='braycurtis,jaccard')
 @click.option("--outp")
-def alpha_diversity(inp, metrics, outp):
+def beta_diversity(inp, metrics, outp):
     a = Artifact.load(inp)
     _metrics=metrics.split(",")
 
@@ -18,4 +18,4 @@ def alpha_diversity(inp, metrics, outp):
         r.distance_matrix.view(DistanceMatrix).to_data_frame().to_csv(outp.split(".")[0]+"-" + 
             metric + "."+outp.split(".")[1])
 if __name__ == "__main__":
-    alpha_diversity()
+    beta_diversity()
