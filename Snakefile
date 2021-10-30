@@ -581,6 +581,7 @@ rule summary:
           "results/{cohort}/{id}-seq.csv",
           "results/{cohort}/{id}_cls-{cls}_rrf{r}_beta-braycurtis.tsv",
           "results/{cohort}/{id}_cls-{cls}_rrf{r}_beta-jaccard.tsv",
+          "results/{cohort}/plots/{id}-stats.pdf"
 
 
      output:
