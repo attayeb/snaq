@@ -96,7 +96,7 @@ rule import_data:
      input:
           "results/{cohort}/{cohort}_manifest.tsv" 
      output:
-          "results/{cohort}/{cohort}_raw.qza"
+          "results/{cohort}/{cohort}.qza"
      message:
           "Import data"
      conda: 
@@ -110,7 +110,7 @@ rule import_data:
 
 rule cutadapt:
      input:
-          "results/{cohort}/{cohort}_raw.qza"
+          "results/{cohort}/{cohort}.qza"
      output:
           "results/{cohort}/{cohort}_ca.qza"
      conda:
