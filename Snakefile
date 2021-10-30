@@ -155,7 +155,7 @@ rule trim_bbduk:
 
 rule dada2:
      input:
-          "results/{cohort}/{cohort}_{etc}.qza"
+          "results/{cohort}/{id}.qza"
      output:
           table="results/{cohort}/{id}_dd-table_rrf0.qza",
 	     stats="results/{cohort}/{id}_dd-stats.qza",
