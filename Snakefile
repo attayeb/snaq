@@ -127,9 +127,9 @@ rule cutadapt:
 
 rule trim_fastp:
      input:
-          qza="results/{cohort}/{cohort}_raw.qza"
+          qza="results/{cohort}/{id}.qza"
      output:
-          "results/{cohort}/{cohort}_fp-f{len1}-r{len2}crop.qza"
+          "results/{cohort}/{id}_fp-f{len1}-r{len2}crop.qza"
      message:
           "Trimming using fastp"
      conda: 
@@ -140,9 +140,9 @@ rule trim_fastp:
 
 rule trim_bbduk:
      input:
-          qza="results/{cohort}/{cohort}_{etc}.qza"
+          qza="results/{cohort}/{id}.qza"
      output:
-          "results/{cohort}/{cohort}_{etc}_bb{threshold}t.qza"
+          "results/{cohort}/{id}_bb{threshold}t.qza"
      message:
           "Trimming using bbduk"
      params:
@@ -157,9 +157,9 @@ rule dada2:
      input:
           "results/{cohort}/{cohort}_{etc}.qza"
      output:
-          table="results/{cohort}/{cohort}_{etc}_dd-table_rrf0.qza",
-	     stats="results/{cohort}/{cohort}_{etc}_dd-stats.qza",
-	     repseq="results/{cohort}/{cohort}_{etc}_dd-seq.qza"
+          table="results/{cohort}/{id}_dd-table_rrf0.qza",
+	     stats="results/{cohort}/{id}_dd-stats.qza",
+	     repseq="results/{cohort}/{id}_dd-seq.qza"
      message:
           "Dada2 analysis"
      threads: 30
