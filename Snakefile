@@ -1,11 +1,17 @@
 """
 Snakemake pipeline for analyzing 16S RNA data using QIIME2
 
-How to run it:
+Usage
+-----
+
+snakemake 
 
 """
 
 rule explain:
+     """
+     
+     """
      input:
           "explain.txt"
      shell:
@@ -13,6 +19,22 @@ rule explain:
 
 
 rule export_artifact:
+     """Export Artifact content to a folder
+       Input
+       -----
+          QIIME2 Artifact file (qza)
+     
+       Output
+       ------
+          Directory contains the content of the Artifact
+     
+       Tools
+       -----
+          export command from qiime tools
+     
+       Actions
+       -------
+          Export the artifact content to ouput folder"""
      input:
           "results/{cohort}/{cohort}_{etc}.qza"
      output:
@@ -26,17 +48,17 @@ rule export_artifact:
 
 
 def get_allfile_names(wildcards):
-     """Get all files from a foler"""
+     """Get all files from a folder"""
      input_folder = os.path.join("temp", wildcards.cohort, wildcards.cohort+"_"+wildcards.etc)
      return " ".join([os.path.join(input_folder, x) for x in os.listdir(input_folder) if "fastq" in x])
 
 
-rule print_help:
+rule help:
      """  Print help
-     Input: None
-     Output: None
-     Action: print out the information of rules on screen
-     """
+     
+       Action 
+       ------
+          Print out the information of rules on screen (docstrings)."""
      run:
           from termcolor import cprint
           for rule in workflow.rules:
@@ -49,14 +71,17 @@ rule print_help:
           
 rule qza_fastqc:
      """  Fastqc
-     Input: Fastq files
+     Input
+     -----
+          Artifact of type  
+          Fastq files
      Output: fastq report html file.
      Action: Run fastqc quality control analysis
      """
      input:
-          "temp/{cohort}/{cohort}_{etc}"          
+          "temp/{cohort}/{id}"          
      output:
-          directory("quality/{cohort}/{cohort}_{etc}/fastqc/")
+          directory("quality/{cohort}/{id}/fastqc/")
      threads:
           20
      conda:
@@ -78,6 +103,19 @@ rule qza_multiqc:
           "multiqc -o {output} {input}"
 
 rule manifest:
+     """Create manifest file
+       input
+       -----
+          folder name that contain the data (data/cohort/)
+       
+       output
+       ------
+          manifest file (cohort_manifest.tsv)
+       
+       tools
+       -----
+          utilizes scripts/create_manifest_file.py script
+     """
      input:
           "data/{cohort}"
      output:
@@ -88,10 +126,19 @@ rule manifest:
           "python scripts/create_manifest_file.py -i {input} -o {output}"
 
 rule import_data:
-     """  Import data:
-     Input: folder with fastq files (pair-ended)
-     Output: QIIME2 data sequence artiact.
-     Action: Import the raw fastq files to Qiime2 artifact with qza 
+     """Import data:
+       input
+       -----
+          manifest file (pair-ended).
+       Output 
+       ------
+          QIIME2 data sequence artifact.
+       tools
+       -----
+          utilizes "qiime tools import" command.
+       action
+       ------
+          Import the raw fastq files to Qiime2 artifact with qza extension
      """
      input:
           "results/{cohort}/{cohort}_manifest.tsv" 
