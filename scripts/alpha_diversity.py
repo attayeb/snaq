@@ -1,5 +1,5 @@
-    """This script calculates Alpha diversity using QIIME2 functions.
-    """
+"""This script calculates Alpha diversity using QIIME2 functions.
+"""
 
 
 
