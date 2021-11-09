@@ -15,7 +15,7 @@ def beta_diversity(inp, metrics, outp):
 
     for metric in _metrics:
         r = beta(a, metric)
-        r.distance_matrix.view(DistanceMatrix).to_data_frame().to_csv(outp.split(".")[0]+"-" + 
+        r.distance_matrix.view(DistanceMatrix).to_data_frame().to_csv(outp.split(".")[0]+"_" + 
             metric + "."+outp.split(".")[1])
 if __name__ == "__main__":
     beta_diversity()
