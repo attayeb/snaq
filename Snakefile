@@ -619,7 +619,7 @@ rule weighted_unifrac:
           table="results/{cohort}/{id}_table+rrf{r}.qza",
           tree="results/{cohort}/{id}+fasttree_rooted.qza"
      output:
-          "results/{cohort}/{id}_rrf{r}+beta_weightedunifrac.qza"
+          "results/{cohort}/{id}+rrf{r}+beta_weightedunifrac.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
