@@ -777,10 +777,10 @@ rule alpha_diversity:
 
 rule beta_diversity:
      input:
-          "results/{cohort}/{id}+rrf{r}+otu-tax.qza"
+          "results/{cohort}/{id}+rrf{r}+otu_tax.qza"
      output:
-          "results/{cohort}/{id}_rrf{r}+beta_braycurtis.tsv",
-          "results/{cohort}/{id}_rrf{r}+beta_jaccard.tsv",
+          "results/{cohort}/{id}+rrf{r}+beta_braycurtis.tsv",
+          "results/{cohort}/{id}+rrf{r}+beta_jaccard.tsv",
      params:
           "results/{cohort}/{id}+rrf{r}+beta.tsv"
      conda:
