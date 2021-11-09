@@ -16,10 +16,14 @@ from qiime2.plugins.diversity.pipelines import alpha
 def alpha_diversity(inp, metrics, outp):
     """[summary]
 
-    Args:
-        inp (str): input file name
-        metrics (str): metrics separated by comma, no spaces
-        outp (str): output file names
+    Parameters
+    ----------
+    inp : [type]
+        [description]
+    metrics : [type]
+        [description]
+    outp : [type]
+        [description]
     """
     a = Artifact.load(inp)
     _metrics=metrics.split(",")

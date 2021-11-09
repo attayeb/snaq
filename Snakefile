@@ -104,15 +104,15 @@ rule qza_multiqc:
 
 rule manifest:
      """Create manifest file
-       input
+       Input
        -----
           folder name that contain the data (data/cohort/)
        
-       output
+       Output
        ------
-          manifest file (cohort_manifest.tsv)
+          manifest file (results/cohort/cohort_manifest.tsv)
        
-       tools
+       Tools
        -----
           utilizes scripts/create_manifest_file.py script
      """
@@ -129,7 +129,7 @@ rule import_data:
      """Import data:
        input
        -----
-          manifest file (pair-ended).
+          manifest file (pair-ended) [tsv].
        Output 
        ------
           QIIME2 data sequence artifact.
@@ -155,28 +155,35 @@ rule import_data:
 	     "--input-format PairedEndFastqManifestPhred33V2 "
 	     "--output-path {output} "
 
-rule cutadapt:
-     input:
-          "results/{cohort}/{cohort}.qza"
-     output:
-          "results/{cohort}/{cohort}_ca.qza"
-     conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
-     threads:
-          20
-     shell:
-          "qiime cutadapt trim-paired "
-          "--i-demultiplexed-sequences {input} "
-          "--p-cores {threads} "
-          "--o-trimmed-sequences {output}"
-
-
 
 rule trim_fastp:
+     """Crop primers:
+       input
+       -----
+          ARTIFACT SampleData[PairedEndSequencesWithQuality] 
+       Output 
+       ------
+          ARTIFACT SampleData[PairedEndSequencesWithQuality]
+       tools
+       -----
+          utilizes "scripts/fastp.py" script which uses is a wrapper of fastp, takes input as a qiime2 artifact and produce qiime2 artifact output
+       parameters
+       ----------
+          takes forward cropping length and backward cropping length
+       action
+       ------
+          Crop primers from both end reads.
+       usage
+       -----
+          fp-f17-r21crop : trims 17 bases from forward read and 21 bases form backward read.
+     
+          ex:
+          snakemake --cores 10 --use-conda results/CH/CH_fp-f17-r21.qza
+     """
      input:
           qza="results/{cohort}/{id}.qza"
      output:
-          "results/{cohort}/{id}_fp-f{len1}-r{len2}crop.qza"
+          "results/{cohort}/{id}+fp-f{len1}-r{len2}crop.qza"
      message:
           "Trimming using fastp"
      conda: 
@@ -186,10 +193,36 @@ rule trim_fastp:
 
 
 rule trim_bbduk:
+     """Quality trimming using bbduk:
+       input
+       -----
+          original seq data [ARTIFACT SampleData[PairedEndSequencesWithQuality]]
+       Output 
+       ------
+          quality trimmed seq data [ARTIFACT SampleData[PairedEndSequencesWithQuality]]
+       tools
+       -----
+          utilizes "scripts/bbduk.py" script which uses is a wrapper of bbduk.sh, takes input as a qiime2 artifact and produce qiime2 artifact output
+       parameters
+       ----------
+          takes quality trimming threshold as bb{threshold}t
+       action
+       ------
+          quality trimming of fastq files (pair-ended).
+       usage
+       -----
+          bb16t : trims the distal part of both reads (R1 and R2) when the average quality score of the distal segment is less than 16.
+     
+          ex:
+          quality trimming of the raw files:
+          - snakemake --cores 10 --use-conda results/CH/CH_bb16t.qza
+          quality trimming of the primers croped data:
+          - snakemake --cores 10 --use-conda results/CH/CH+fp-17f-r21+bb16t.qza
+     """
      input:
           qza="results/{cohort}/{id}.qza"
      output:
-          "results/{cohort}/{id}_bb{threshold}t.qza"
+          "results/{cohort}/{id}+bb{threshold}t.qza"
      message:
           "Trimming using bbduk"
      params:
@@ -201,12 +234,45 @@ rule trim_bbduk:
 
 
 rule dada2:
+     """Dada2 algorithm
+       input
+       -----
+          ARTIFACT SampleData[PairedEndSequencesWithQuality] 
+       Output 
+       ------
+          {dd-table_rrf0.qza} ARTIFACT FeatureTable[Frequency]
+          {dd-seq.qza} ARTIFACT FeatureData[Sequence]
+          {dd-stats.qza} ARTIFACT SampleData[DADA2Stats]
+       tools
+       -----
+          utilizes "qiime dada2 denoise-paired" command
+       action
+       ------
+          denoises paired-end sequences, dereplicates them, and filters chimeras.
+       usage
+       -----
+          you can specify any output among the three output to get them all.
+          ex: dd-seq.qza
+           
+          ex:
+          dada2 of raw data without primer cropping or quality trimming:
+          - sankemake --cores 10 --use-conda results/CH/CH_dd-table_rrf0.qza
+          pair-end denoising of the data after cropping primers:
+          - snakemake --cores 10 --use-conda results/CH/CH_bb16t_dd-seq.qza
+          dada2 of data after quality trimming of the raw files after primers cropping:
+          - snakemake --cores 10 --use-conda results/CH/CH_fp-17f-r21_bb16t_dd-stats.qza
+        
+        note
+        ----
+          rrf0 was added to distinguish the original input before rarefaction from rarefied table files.
+
+     """
      input:
           "results/{cohort}/{id}.qza"
      output:
-          table="results/{cohort}/{id}_dd-table_rrf0.qza",
-	     stats="results/{cohort}/{id}_dd-stats.qza",
-	     repseq="results/{cohort}/{id}_dd-seq.qza"
+          table="results/{cohort}/{id}+dd_table+rrf0.qza",
+	     stats="results/{cohort}/{id}+dd_stats.qza",
+	     repseq="results/{cohort}/{id}+dd_seq.qza"
      message:
           "Dada2 analysis"
      threads: 30
@@ -223,10 +289,32 @@ rule dada2:
 
 
 rule rarefy:
+     """Dada2 table file rarefication
+       input
+       -----
+          ARTIFACT FeatureTable[Frequency]
+       Output 
+       ------
+          ARTIFACT FeatureTable[Frequency]
+       tools
+       -----
+          utilizes "qiime feature-table rarefy" command
+       action
+       ------
+          rarefy feature table.
+       usage
+       -----
+           
+          ex:
+          rarefy the table to 10000
+          - sankemake --cores 10 --use-conda results/CH/CH_dd-table_rrf10000.qza
+          rarefy the table to 1000
+          - snakemake --cores 10 --use-conda results/CH/CH_bb16t_dd-table_rrf1000.qza
+     """
      input:
-          "results/{cohort}/{id}-table_rrf0.qza"
+          "results/{cohort}/{id}_table+rrf0.qza"
      output:
-          "results/{cohort}/{id}-table_rrf{r}.qza"
+          "results/{cohort}/{id}_table+rrf{r}.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -237,23 +325,38 @@ rule rarefy:
 
 rule plot_dada_stats:
      input:
-          "results/{cohort}/{id}_dd-stats.qza"
+          "results/{cohort}/{id}+dd_stats.qza"
      output:
-          "results/{cohort}/plots/{id}_dd-stats.pdf"
+          "results/{cohort}/plots/{id}+dd_stats.pdf"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
           "python scripts/plot_dada.py --inp {input} --plot {output}"
 
 
-
 rule download_silva_classifier:
+     """ Download pretrained SILVA taxonomy classifier
+     output
+     ------
+          ARTIFACT TaxonomicClassifier
+     action
+     ------
+          Download pretrained SILVA classifier.
+     """
      output:
           "classifiers/silva-classifier.qza"
      shell:
           "cd classifiers && wget https://zenodo.org/record/5535616/files/silva-classifier.qza"
 
 rule download_gg_classifier:
+     """ Download GreenGenes taxonomy classifier
+     output
+     ------
+          ARTIFACT TaxonomicClassifier
+     action
+     ------
+          Download pretrained GreenGenes classifier.
+     """
      output:
           "classifiers/gg-classifier.qza"
      shell:
@@ -261,6 +364,14 @@ rule download_gg_classifier:
           "wget https://zenodo.org/record/5535616/files/gg-classifier.qza"
 
 rule download_silvav34_classifier:
+     """ Download V3-V4 region pretrained SILVA classifier.
+     output
+     ------
+          ARTIFACT TaxonomicClassifier
+     action
+     ------
+          Download pretrained SILVA V3-V4 region classifier.
+     """
      output:
           "classifiers/silvaV34-classifier.qza"
      shell:
@@ -269,12 +380,37 @@ rule download_silvav34_classifier:
 
 
 rule taxonomy:
+     """Dada2 table file rarefication
+       input
+       -----
+          reads = ARTIFACT FeatureTable[Frequency]
+          classifier = ARTIFACT TaxonomicClassifier
+       Output 
+       ------
+          taxonomy = ARTIFACT FeatureData[Taxonomy]
+       tools
+       -----
+          utilizes "qiime feature-classifier classify-sklearn" command
+       action
+       ------
+          Assign taxonomy to ASVs.
+       usage
+       -----
+          classifier need ot be assigned after _cls-{classifier}
+          available options:
+               - GreenGenes: _cls-gg-taxonomy.qza
+               - SILVA: _cls-silva-taxonomy.qza
+               _ SILVA V3-V4: _cls-silvaV34-taxonomy.qza
+          Because it is will understood which output form dada2 is going to be used, no need to add -seq after dd
+          
+          ex:
+          - sankemake --cores 10 --use-conda results/CH/CH_dd_cls-gg-taxonomy.qza
+     """
      input:
-          repseq = "results/{cohort}/{id}-seq.qza",
+          seq = "results/{cohort}/{id}_seq.qza",
 	     classifier = "classifiers/{cls}-classifier.qza"
      output:
-          taxonomy= "results/{cohort}/{id}_cls-{cls}_taxonomy.qza",
-	#table = "results/{resfseq}_{cls}_table.qzv"
+          taxonomy= "results/{cohort}/{id}+cls-{cls}_taxonomy.qza",
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"
      threads: 30
@@ -283,15 +419,17 @@ rule taxonomy:
      shell:
           "qiime feature-classifier classify-sklearn "
 	     "--i-classifier {input.classifier} "
-	     "--i-reads {input.repseq} --p-n-jobs {threads} "
+	     "--i-reads {input.seq} --p-n-jobs {threads} "
 	     "--o-classification {output.taxonomy}"
 
 
 rule mafft:
+     """ Creating phylogeny tree step 1 
+     """
      input:
-          "results/{cohort}/{id}-seq.qza"
+          "results/{cohort}/{id}_seq.qza"
      output:
-          "results/{cohort}/tree/{id}-seqaligned.qza"
+          "results/{cohort}/tree/{id}_seqaligned.qza"
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"
      message:
@@ -302,10 +440,12 @@ rule mafft:
           "--o-alignment {output}"
 
 rule alignment_mask:
+     """ Creating phylogeny tree step 2
+     """
      input:
-          "results/{cohort}/tree/{id}-seqaligned.qza"
+          "results/{cohort}/tree/{id}_seqaligned.qza"
      output:
-          "results/{cohort}/tree/{id}-seqaligned-masked.qza"
+          "results/{cohort}/tree/{id}_seqaligned_masked.qza"
      message:
           "Alignment mask"
      conda: 
@@ -316,10 +456,12 @@ rule alignment_mask:
           "--o-masked-alignment {output}"
 
 rule fasttree:
+     """ Creating phylogeny tree step 3 
+     """
      input:
-          "results/{cohort}/tree/{id}-seqaligned-masked.qza"
+          "results/{cohort}/tree/{id}_seqaligned_masked.qza"
      output:
-          "results/{cohort}/tree/{id}_fasttree.qza"
+          "results/{cohort}/tree/{id}+fasttree.qza"
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"
      message:
@@ -330,10 +472,12 @@ rule fasttree:
           "--o-tree {output}"
 
 rule midpoint_root:
+     """ Creating phylogeny tree step 4
+     """
      input:
-          "results/{cohort}/tree/{id}_fasttree.qza"
+          "results/{cohort}/tree/{id}+fasttree.qza"
      output:
-          "results/{cohort}/{id}_fasttree_rooted.qza"
+          "results/{cohort}/{id}+fasttree_rooted.qza"
      message:
           "Midpoint rooting the tree"
      conda: 
@@ -345,16 +489,19 @@ rule midpoint_root:
 
 
 rule export_tree:
+     """ Creating phylogeny tree step 5:
+          Exporting tree from Artifact file
+     """
      input:
-          "results/{cohort}/{id}_fasttree_rooted.qza"
+          "results/{cohort}/{id}+fasttree_rooted.qza"
      output:
-          "results/{cohort}/{id}_fasttree.nwk"
+          "results/{cohort}/{id}+fasttree.nwk"
      conda: 
           "envs/qiime2-latest-py38-linux-conda.yml"
      message:
           "Save the tree.nwk file"
      params:
-          "results/{cohort}/{id}_fasttree_rooted"
+          "results/{cohort}/{id}+fasttree_rooted"
      shell:
           """qiime tools export \
                --input-path {input} \
@@ -365,11 +512,43 @@ rule export_tree:
     
 
 rule make_biom:
+     """Create Biom table
+       Input
+       -----
+          - Abdundance table (ARTIFACT FeatureTable[Frequency])
+          - Taxonomy table (ARTIFACT FeatureData[Taxonomy])
+       Output
+       ------
+          biom Table
+       Tools
+       -----
+          utilizes "scripts/make_biom.py" which merge the table frequency with the taxonomy
+       Usage
+       -----
+          This rule produce biom table from FeatureTable[Frequency] without taxonomy collapsing. The rows of the presented biom table are the original ASVs
+
+          ex:
+          To produce the analysis of CH cohort with:
+               * primer cropping at f:17 and r:21, 
+               * quality trimming with 14 thereshold,
+               * dada 2 denoising
+               * using SILVA classifier for taxonomy assignment
+               * rarefied at 1000
+          snakemake --cores 10 --use-conda results/CH/CH_fp-17f-21rcrop_bb14t_dd_cls-silva_rrf10000.biom
+
+          To produce the analysis of CH cohort with:
+               * primer cropping at f:17 and r:21, 
+               * quality trimming with 14 thereshold,
+               * dada 2 denoising
+               * using GreenGene classifier for taxonomy assignment
+               * rarefied at 1000
+          snakemake --cores 10 --use-conda results/CH/CH_fp-17f-21rcrop_bb14t_dd_cls-gg_rrf10000.biom
+     """
      input:
-          table="results/{cohort}/{id}-table_rrf{r}.qza",
-          taxonomy="results/{cohort}/{id}_cls-{cls}_taxonomy.qza"
+          table="results/{cohort}/{id}_table+rrf{r}.qza",
+          taxonomy="results/{cohort}/{id}+cls-{cls}_taxonomy.qza"
      output:
-          "results/{cohort}/{id}_cls-{cls}_rrf{r}.biom"
+          "results/{cohort}/{id}+cls-{cls}+rrf{r}.biom"
      message:
           "Making biom table {output}"
      conda: 
@@ -380,10 +559,11 @@ rule make_biom:
           "--output {output}"
 
 rule extract_biom:
+     """Auxillary rule to extract biom from Artifact (QZA)"""
      input:
-          "results/{cohort}/{cohort}_{id}.qza"
+          "results/{cohort}/{cohort}+{id}.qza"
      output:
-          "results/{cohort}/{cohort}_{id}.biom"
+          "results/{cohort}/{cohort}+{id}.biom"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -391,10 +571,11 @@ rule extract_biom:
           "--filename {output} --filetype biom"
 
 rule extract_sequence:
+     """Auxillary rule to exract dada2 ASV sequences from (qza) Artifact to csv file"""
      input:
-          "results/{cohort}/{cohort}_{id}_dd-seq.qza"
+          "results/{cohort}/{cohort}+{id}+dd_seq.qza"
      output:
-          "results/{cohort}/{cohort}_{id}_dd-seq.csv"
+          "results/{cohort}/{cohort}+{id}+dd_seq.csv"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -402,11 +583,31 @@ rule extract_sequence:
           "--filename {output} --filetype metadata"
 
 rule export_phyloseq:
+     """Create Phyloseq object RDS file
+       Input
+       -----
+          Biom table without rarefication [.biom file]
+          Phylogeny tree [.nwk file]
+       Output
+       ------
+          Phyloseq object saved in RDS file
+       Tools
+       -----
+          utilizes "scripts/export_phyloseq.R" which is wriitn in R
+       Usage
+       -----
+          ex:
+          snakemake --core 10 --use-conda results/CH/CH_fp-f12-r22crop_bb12t_dd_cls-gg_rrf0_phyloseq.RDS
+       Note
+       ----
+          It is not possible to create Phyloseq Object from data after taxonomy collapse because the tree is available only for ASV level,
+          rarefication is possible in R after uploading the object to R
+     """
      input:
-          biom="results/{cohort}/{id}_cls-{cls}_rrf0.biom",
-          tree="results/{cohort}/{id}_fasttree.nwk"
+          biom="results/{cohort}/{id}+cls-{cls}+rrf0.biom",
+          tree="results/{cohort}/{id}+fasttree.nwk"
      output:
-          "results/{cohort}/{id}_cls-{cls}_rrf0_phyloseq.RDS"
+          "results/{cohort}/{id}+cls-{cls}+rrf0+phyloseq.RDS"
      conda:
           "envs/phyloseq.yml"
      shell:
@@ -415,10 +616,10 @@ rule export_phyloseq:
 
 rule weighted_unifrac:
      input:
-          table="results/{cohort}/{id}-table_rrf{r}.qza",
-          tree="results/{cohort}/{id}_fasttree_rooted.qza"
+          table="results/{cohort}/{id}_table+rrf{r}.qza",
+          tree="results/{cohort}/{id}+fasttree_rooted.qza"
      output:
-          "results/{cohort}/{id}_rrf{r}_weightedunifrac.qza"
+          "results/{cohort}/{id}_rrf{r}+beta_weightedunifrac.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -428,10 +629,10 @@ rule weighted_unifrac:
 
 rule unweighted_unifrac:
      input:
-          table="results/{cohort}/{id}-table_rrf{r}.qza",
-          tree="results/{cohort}/{id}_fasttree_rooted.qza"
+          table="results/{cohort}/{id}_table+rrf{r}.qza",
+          tree="results/{cohort}/{id}+fasttree_rooted.qza"
      output:
-          "results/{cohort}/{id}_rrf{r}_unweightedunifrac.qza"
+          "results/{cohort}/{id}+rrf{r}+beta_unweightedunifrac.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -452,9 +653,9 @@ rule extract_taxonomy_csv:
 
 rule extract_dadatable_csv:
      input:
-          "results/{cohort}/{id}-table_rrf{r}.qza"           
+          "results/{cohort}/{id}_table+rrf{r}.qza"           
      output:
-          "results/{cohort}/{id}-table_rrf{r}.csv"
+          "results/{cohort}/{id}_table+rrf{r}.csv"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -477,10 +678,10 @@ rule extract_unifrac_csv:
 
 rule merge_dadatable:
      input:
-          f1="results/{cohort1}/{cohort1}_{id}-table_rrf{r}.qza",
-          f2="results/{cohort2}/{cohort2}_{id}-table_rrf{r}.qza"
+          f1="results/{cohort1}/{cohort1}_{id}_table+rrf{r}.qza",
+          f2="results/{cohort2}/{cohort2}_{id}_table+rrf{r}.qza"
      output:
-          "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}-table_rrf{r}.qza"
+          "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}+{id}_table+rrf{r}.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -491,10 +692,10 @@ rule merge_dadatable:
 
 rule merge_dadaseq:
      input:
-          f1="results/{cohort1}/{cohort1}_{id}-seq.qza",
-          f2="results/{cohort2}/{cohort2}_{id}-seq.qza"
+          f1="results/{cohort1}/{cohort1}+{id}_seq.qza",
+          f2="results/{cohort2}/{cohort2}+{id}_seq.qza"
      output:
-          "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}-seq.qza"
+          "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}+{id}_seq.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -507,10 +708,10 @@ rule merge_taxonomy:
      priority:
           1
      input:
-          f1="results/{cohort1}/{cohort1}_{id}_taxonomy.qza",
-          f2="results/{cohort2}/{cohort2}_{id}_taxonomy.qza"
+          f1="results/{cohort1}/{cohort1}+{id}_taxonomy.qza",
+          f2="results/{cohort2}/{cohort2}+{id}_taxonomy.qza"
      output:
-          "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}_{id}_taxonomy.qza"
+          "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}+{id}_taxonomy.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -521,10 +722,10 @@ rule merge_taxonomy:
 
 rule collapse_tax:
      input:
-          table="results/{cohort}/{cohort}_{id}_dd-table_rrf{r}.qza",
-          tax="results/{cohort}/{cohort}_{id}_dd_{etc}_taxonomy.qza"
+          table="results/{cohort}/{cohort}+{id}+dd_table+rrf{r}.qza",
+          tax="results/{cohort}/{cohort}+{id}+dd+{etc}_taxonomy.qza"
      output:
-          "results/{cohort}/{cohort}_{id}_dd_{etc}_rrf{r}_otu-tax.qza"
+          "results/{cohort}/{cohort}+{id}+dd+{etc}+rrf{r}+otu_tax.qza"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -547,10 +748,10 @@ rule create_metadata_file:
 
 rule core_metrics:
      input:
-          table="results/{cohort}/{id}-table_rrf{r}.qza",
+          table="results/{cohort}/{id}_table+rrf{r}.qza",
           metadata="results/{cohort}/{cohort}_metadata.tsv"
      output:
-          directory("results/{cohort}/{id}_rrf{r}_coremetrics/")
+          directory("results/{cohort}/{id}+rrf{r}+coremetrics/")
      threads:
           30
      conda:
@@ -565,9 +766,9 @@ rule core_metrics:
 
 rule alpha_diversity:
      input:
-          "results/{cohort}/{id}-table_rrf{r}.qza"
+          "results/{cohort}/{id}_table+rrf{r}.qza"
      output:
-          "results/{cohort}/{id}_rrf{r}_alphadiversity.tsv"
+          "results/{cohort}/{id}+rrf{r}+alphadiversity.tsv"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"          
      shell:
@@ -576,12 +777,12 @@ rule alpha_diversity:
 
 rule beta_diversity:
      input:
-          "results/{cohort}/{id}_rrf{r}_otu-tax.qza"
+          "results/{cohort}/{id}+rrf{r}+otu-tax.qza"
      output:
-          "results/{cohort}/{id}_rrf{r}_beta-braycurtis.tsv",
-          "results/{cohort}/{id}_rrf{r}_beta-jaccard.tsv",
+          "results/{cohort}/{id}_rrf{r}+beta_braycurtis.tsv",
+          "results/{cohort}/{id}_rrf{r}+beta_jaccard.tsv",
      params:
-          "results/{cohort}/{id}_rrf{r}_beta.tsv"
+          "results/{cohort}/{id}+rrf{r}+beta.tsv"
      conda:
           "envs/qiime2-latest-py38-linux-conda.yml"
      shell:
@@ -599,12 +800,12 @@ rule biom_to_tsv:
 
 rule manta:
      input:
-          tsv="results/{cohort}/{id}_cls-{cls}_rrf{r}_otu-tax_biom.tsv",
+          tsv="results/{cohort}/{id}+cls-{cls}+rrf{r}+otu_tax_biom.tsv",
           taxonpath="db/taxonpath.json",
           names="db/names.json"
      output:
-          full="results/{cohort}/{id}_cls-{cls}_rrf{r}_manta.tsv",
-          tax="results/{cohort}/{id}_cls-{cls}_rrf{r}_manta-tax.tsv"
+          full="results/{cohort}/{id}+cls-{cls}+rrf{r}+manta.tsv",
+          tax="results/{cohort}/{id}+cls-{cls}+rrf{r}+manta_tax.tsv"
      params:
           db=lambda wildcards: "1" if wildcards.cls=="gg" else "2"
      conda:
@@ -615,24 +816,24 @@ rule manta:
 
 rule summary:
      input:
-          "results/{cohort}/{id}_cls-{cls}_taxonomy.csv",
-          "results/{cohort}/{id}-table_rrf{r}.csv",
-          "results/{cohort}/{id}_rrf{r}_weightedunifrac.csv",
-          "results/{cohort}/{id}_rrf{r}_unweightedunifrac.csv",
-          "results/{cohort}/{id}_cls-{cls}_rrf{r}_otu-tax.biom",
-          "results/{cohort}/{id}_cls-{cls}_rrf{r}_otu-tax_biom.tsv",
-          "results/{cohort}/{id}_cls-{cls}_rrf0_phyloseq.RDS",
-          "results/{cohort}/{id}_rrf{r}_alphadiversity.tsv",
-          "results/{cohort}/{id}_cls-{cls}_rrf{r}_manta.tsv",
-          "results/{cohort}/{id}_cls-{cls}_rrf{r}_manta-tax.tsv",
-          "results/{cohort}/{id}-seq.csv",
-          "results/{cohort}/{id}_cls-{cls}_rrf{r}_beta-braycurtis.tsv",
-          "results/{cohort}/{id}_cls-{cls}_rrf{r}_beta-jaccard.tsv",
-          "results/{cohort}/plots/{id}-stats.pdf"
+          "results/{cohort}/{id}+cls-{cls}_taxonomy.csv",
+          "results/{cohort}/{id}_table+rrf{r}.csv",
+          "results/{cohort}/{id}+rrf{r}+beta_weightedunifrac.csv",
+          "results/{cohort}/{id}+rrf{r}+beta_unweightedunifrac.csv",
+          "results/{cohort}/{id}+cls-{cls}+rrf{r}+otu_tax.biom",
+          "results/{cohort}/{id}+cls-{cls}+rrf{r}+otu_tax_biom.tsv",
+          "results/{cohort}/{id}+cls-{cls}+rrf0+phyloseq.RDS",
+          "results/{cohort}/{id}+rrf{r}+alphadiversity.tsv",
+          "results/{cohort}/{id}+cls-{cls}+rrf{r}+manta.tsv",
+          "results/{cohort}/{id}+cls-{cls}+rrf{r}+manta_tax.tsv",
+          "results/{cohort}/{id}_seq.csv",
+          "results/{cohort}/{id}+cls-{cls}+rrf{r}+beta_braycurtis.tsv",
+          "results/{cohort}/{id}+cls-{cls}+rrf{r}+beta_jaccard.tsv",
+          "results/{cohort}/plots/{id}_stats.pdf"
 
 
      output:
-          "results/{cohort}/{id}_cls-{cls}_rrf{r}.zip"
+          "results/{cohort}/{id}+cls-{cls}+rrf{r}.zip"
      shell:
           "zip -j {output} {input}"
 
