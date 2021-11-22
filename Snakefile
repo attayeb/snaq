@@ -851,7 +851,7 @@ rule summary:
      output:
           "results/{cohort}/{id}+cls-{cls}+rrf{r}.zip"
      conda:
-          "env/other.yml"
+          "envs/other.yml"
      shell:
           "zip -j {output} {input}"
 
