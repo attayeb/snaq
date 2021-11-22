@@ -694,8 +694,8 @@ rule extract_unifrac_csv:
 
 rule merge_dadatable:
      input:
-          f1="results/{cohort1}/{cohort1}_{id}_table.qza",
-          f2="results/{cohort2}/{cohort2}_{id}_table.qza"
+          f1="results/{cohort1}/{cohort1}+{id}_table.qza",
+          f2="results/{cohort2}/{cohort2}+{id}_table.qza"
      output:
           "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}+{id}_table.qza"
      conda:
