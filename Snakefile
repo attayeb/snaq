@@ -844,8 +844,8 @@ rule summary:
           "results/{cohort}/{id}+cls-{cls}+rrf{r}+manta_tax.tsv",
           "results/{cohort}/{id}_seq.csv",
           "results/{cohort}/{id}+cls-{cls}+rrf{r}+beta_braycurtis.tsv",
-          "results/{cohort}/{id}+cls-{cls}+rrf{r}+beta_jaccard.tsv",
-          "results/{cohort}/plots/{id}_stats.pdf"
+          "results/{cohort}/{id}+cls-{cls}+rrf{r}+beta_jaccard.tsv"
+          #"results/{cohort}/plots/{id}_stats.pdf"
 
 
      output:
