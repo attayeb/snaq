@@ -129,7 +129,7 @@ rule manifest:
      input:
           "data/{cohort, [A-Z]}/"
      output:
-          "results/{cohort, [A-Z]}/{cohort,[A-Z]}_manifest.tsv"
+          "results/{cohort, [A-Z]}/{cohort}_manifest.tsv"
      conda:
           "envs/other.yml"
      shell:
