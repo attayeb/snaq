@@ -191,9 +191,9 @@ rule trim_fastp:
           snakemake --cores 10 --use-conda results/CH/CH_fp-f17-r21.qza
      """
      input:
-          qza="results/{cohort}/{id}.qza"
+          qza="results/{cohort, [A-Z]}/{id}.qza"
      output:
-          "results/{cohort, [A-Z]}/{id}+fp-f{len1}-r{len2}crop.qza"
+          "results/{cohort}/{id}+fp-f{len1}-r{len2}crop.qza"
      message:
           "Trimming using fastp"
      conda: 
@@ -230,9 +230,9 @@ rule trim_bbduk:
           - snakemake --cores 10 --use-conda results/CH/CH+fp-17f-r21+bb16t.qza
      """
      input:
-          qza="results/{cohort}/{id}.qza"
+          qza="results/{cohort, [A-Z]}/{id}.qza"
      output:
-          "results/{cohort, [A-Z]}/{id}+bb{threshold}t.qza"
+          "results/{cohort}/{id}+bb{threshold}t.qza"
      message:
           "Trimming using bbduk"
      params:
