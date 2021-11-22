@@ -856,7 +856,7 @@ rule summary:
           "zip -j {output} {input}"
 
 #ruleorder: trim_bbduk > trim_fastp
-ruleorder: taxonomy > merge_taxonomy 
-ruleorder: rarefy > merge_dadatable
+ruleorder: merge_taxonomy > taxonomy
+ruleorder: merge_dadatable > rarefy
 ruleorder: export_phyloseq  > extract_biom
 ruleorder: extract_biom > make_biom
