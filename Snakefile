@@ -46,9 +46,9 @@ rule export_artifact:
        -------
           Export the artifact content to ouput folder"""
      input:
-          "results/{cohort}/{cohort}_{etc}.qza"
+          "results/{cohort}/{cohort}+{etc}.qza"
      output:
-          directory("temp/{cohort}/{cohort}_{etc}/")
+          directory("temp/{cohort}/{cohort}+{etc}/")
      conda:
           qiime_env
      shell:
