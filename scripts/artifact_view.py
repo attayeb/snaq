@@ -11,7 +11,7 @@ import json
 @click.option("--filename")
 @click.option("--filetype")
 def export(artifact, filename, filetype):
-    
+
     if filetype=="metadata":        
         df = Artifact.load(artifact).view(Metadata).to_dataframe()
         df.to_csv(filename)

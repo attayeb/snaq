@@ -7,6 +7,16 @@ Usage
 snakemake 
 
 """
+from platform import system
+
+_os = system()
+
+if _os == "Linux":
+     qiime_env = "envs/qiime2-2021.8-py38-linux-conda.yml"
+elif _os == "Darwin":
+     qiime_env = "envs/qiime2-2021.8-py38-osx-conda.yml"
+
+
 
 rule explain:
      """
@@ -40,7 +50,7 @@ rule export_artifact:
      output:
           directory("temp/{cohort}/{cohort}_{etc}/")
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "qiime tools export "
           "--input-path {input} "
@@ -147,7 +157,7 @@ rule import_data:
      message:
           "Import data"
      conda: 
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "qiime tools import "
 	     "--type 'SampleData[PairedEndSequencesWithQuality]' "
@@ -183,11 +193,11 @@ rule trim_fastp:
      input:
           qza="results/{cohort}/{id}.qza"
      output:
-          "results/{cohort}/{id}+fp-f{len1}-r{len2}crop.qza"
+          "results/{cohort, [A-Z]}/{id}+fp-f{len1}-r{len2}crop.qza"
      message:
           "Trimming using fastp"
      conda: 
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "python scripts/fastp.py --inputf {input} --len1 {wildcards.len1} --len2 {wildcards.len2} --outputf {output}"
 
@@ -222,13 +232,13 @@ rule trim_bbduk:
      input:
           qza="results/{cohort}/{id}.qza"
      output:
-          "results/{cohort}/{id}+bb{threshold}t.qza"
+          "results/{cohort, [A-Z]}/{id}+bb{threshold}t.qza"
      message:
           "Trimming using bbduk"
      params:
           lambda wildcards, output: output[0].replace(".qza", ".log")
      conda: 
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "python scripts/bbduk.py -i {input} -q {wildcards.threshold} -o {output} > {params}"
 
@@ -266,9 +276,9 @@ rule dada2:
         ----
           rrf0 was added to distinguish the original input before rarefaction from rarefied table files.
 
-     """
+     """ 
      input:
-          "results/{cohort}/{id}.qza"
+          "results/{cohort, [A-Z]}/{id}.qza"
      output:
           table="results/{cohort}/{id}+dd_table+rrf0.qza",
 	     stats="results/{cohort}/{id}+dd_stats.qza",
@@ -277,7 +287,7 @@ rule dada2:
           "Dada2 analysis"
      threads: 30
      conda: 
-          "envs/qiime2-latest-py38-linux-conda.yml"    
+          qiime_env    
      shell:
           "qiime dada2 denoise-paired "
 	     "--p-trunc-len-f 0 --p-trunc-len-r 0 "
@@ -316,7 +326,7 @@ rule rarefy:
      output:
           "results/{cohort}/{id}_table+rrf{r}.qza"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "qiime feature-table rarefy "
           "--i-table {input} "
@@ -329,7 +339,7 @@ rule plot_dada_stats:
      output:
           "results/{cohort}/plots/{id}+dd_stats.pdf"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "python scripts/plot_dada.py --inp {input} --plot {output}"
 
@@ -345,6 +355,8 @@ rule download_silva_classifier:
      """
      output:
           "classifiers/silva-classifier.qza"
+     conda:
+          "envs/other.yml"
      shell:
           "cd classifiers && wget https://zenodo.org/record/5535616/files/silva-classifier.qza"
 
@@ -359,6 +371,8 @@ rule download_gg_classifier:
      """
      output:
           "classifiers/gg-classifier.qza"
+     conda:
+          "envs/other.yml"
      shell:
           "cd classifiers && "
           "wget https://zenodo.org/record/5535616/files/gg-classifier.qza"
@@ -374,6 +388,8 @@ rule download_silvav34_classifier:
      """
      output:
           "classifiers/silvaV34-classifier.qza"
+     conda:
+          "envs/other.yml"
      shell:
           "cd classifiers && "
           "wget https://zenodo.org/record/5535616/files/silvaV34-classifier.qza"
@@ -412,7 +428,7 @@ rule taxonomy:
      output:
           taxonomy= "results/{cohort}/{id}+cls-{cls}_taxonomy.qza",
      conda: 
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      threads: 30
      message:
           "Assign taxonomy using {wildcards.cls} database"
@@ -431,7 +447,7 @@ rule mafft:
      output:
           "results/{cohort}/tree/{id}_seqaligned.qza"
      conda: 
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      message:
           "Mafft alignment"
      shell:
@@ -449,7 +465,7 @@ rule alignment_mask:
      message:
           "Alignment mask"
      conda: 
-          "envs/qiime2-latest-py38-linux-conda.yml"     
+          qiime_env     
      shell:
           "qiime alignment mask "
           "--i-alignment {input} "
@@ -463,7 +479,7 @@ rule fasttree:
      output:
           "results/{cohort}/tree/{id}+fasttree.qza"
      conda: 
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      message:
           "creating tree"
      shell:
@@ -481,7 +497,7 @@ rule midpoint_root:
      message:
           "Midpoint rooting the tree"
      conda: 
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "qiime phylogeny midpoint-root "
           "--i-tree {input} "
@@ -497,7 +513,7 @@ rule export_tree:
      output:
           "results/{cohort}/{id}+fasttree.nwk"
      conda: 
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      message:
           "Save the tree.nwk file"
      params:
@@ -552,7 +568,7 @@ rule make_biom:
      message:
           "Making biom table {output}"
      conda: 
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "python scripts/make_biom.py --tablef {input.table} "
           "--taxonomy {input.taxonomy} "
@@ -565,7 +581,7 @@ rule extract_biom:
      output:
           "results/{cohort}/{cohort}+{id}.biom"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "python scripts/artifact_view.py --artifact {input} "
           "--filename {output} --filetype biom"
@@ -577,7 +593,7 @@ rule extract_sequence:
      output:
           "results/{cohort}/{cohort}+{id}+dd_seq.csv"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "python scripts/artifact_view.py --artifact {input} "
           "--filename {output} --filetype metadata"
@@ -621,7 +637,7 @@ rule weighted_unifrac:
      output:
           "results/{cohort}/{id}+rrf{r}+beta_weightedunifrac.qza"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "qiime diversity-lib weighted-unifrac "
           "--i-table {input.table} --i-phylogeny {input.tree} "
@@ -634,7 +650,7 @@ rule unweighted_unifrac:
      output:
           "results/{cohort}/{id}+rrf{r}+beta_unweightedunifrac.qza"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "qiime diversity-lib unweighted-unifrac "
           "--i-table {input.table} --i-phylogeny {input.tree} "
@@ -646,7 +662,7 @@ rule extract_taxonomy_csv:
      output:
           "results/{cohort}/{id}_taxonomy.csv"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "python scripts/artifact_view.py --artifact {input} "
           "--filename {output} --filetype metadata"
@@ -657,7 +673,7 @@ rule extract_dadatable_csv:
      output:
           "results/{cohort}/{id}_table+rrf{r}.csv"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "python scripts/artifact_view.py --artifact {input} "
           "--filename {output} --filetype metadata"
@@ -668,7 +684,7 @@ rule extract_unifrac_csv:
      output:
           "results/{cohort}/{id}unifrac.csv"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "python scripts/artifact_view.py --artifact {input} "
           "--filename {output} --filetype distance"
@@ -683,7 +699,7 @@ rule merge_dadatable:
      output:
           "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}+{id}_table+rrf{r}.qza"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "qiime feature-table merge "
           "--i-tables {input.f1} "
@@ -697,7 +713,7 @@ rule merge_dadaseq:
      output:
           "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}+{id}_seq.qza"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "qiime feature-table merge-seqs "
           "--i-data {input.f1} "
@@ -713,7 +729,7 @@ rule merge_taxonomy:
      output:
           "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}+{id}_taxonomy.qza"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "qiime feature-table merge-taxa "
           "--i-data {input.f1} "
@@ -727,7 +743,7 @@ rule collapse_tax:
      output:
           "results/{cohort}/{cohort}+{id}+dd+{etc}+rrf{r}+otu_tax.qza"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "qiime taxa collapse --i-table {input.table} "
           "--p-level 7 "
@@ -755,7 +771,7 @@ rule core_metrics:
      threads:
           30
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "qiime diversity core-metrics "
           "--p-sampling-depth {wildcards.r} "
@@ -770,7 +786,7 @@ rule alpha_diversity:
      output:
           "results/{cohort}/{id}+rrf{r}+alphadiversity.tsv"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"          
+          qiime_env          
      shell:
           "python scripts/alpha_diversity.py --inp {input} "
           "--outp {output}"
@@ -784,7 +800,7 @@ rule beta_diversity:
      params:
           "results/{cohort}/{id}+rrf{r}+beta.tsv"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "python scripts/beta_diversity.py --inp {input} --outp {params}"
 
@@ -794,7 +810,7 @@ rule biom_to_tsv:
      output:
           "results/{cohort}/{id}_biom.tsv"
      conda:
-          "envs/qiime2-latest-py38-linux-conda.yml"
+          qiime_env
      shell:
           "biom convert -i {input} -o {output} --to-tsv"
 
@@ -834,10 +850,12 @@ rule summary:
 
      output:
           "results/{cohort}/{id}+cls-{cls}+rrf{r}.zip"
+     conda:
+          "env/other.yml"
      shell:
           "zip -j {output} {input}"
 
-ruleorder: trim_bbduk > trim_fastp
+#ruleorder: trim_bbduk > trim_fastp
 ruleorder: taxonomy > merge_taxonomy 
 ruleorder: rarefy > merge_dadatable
 ruleorder: export_phyloseq  > extract_biom

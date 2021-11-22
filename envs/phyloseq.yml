@@ -6,7 +6,8 @@ channels:
 dependencies:
   
   - r-optparse
-  - r-base
+  - r-base=4.1.1
+  - r-vegan
   - r-essentials
   - bioconductor-multtest
   - bioconductor-phyloseq
