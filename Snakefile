@@ -127,7 +127,7 @@ rule manifest:
           utilizes scripts/create_manifest_file.py script
      """
      input:
-          "data/{cohort}"
+          "data/{cohort, [A-Z]}"
      output:
           "results/{cohort}/{cohort}_manifest.tsv"
      conda:
