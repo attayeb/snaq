@@ -280,7 +280,7 @@ rule dada2:
      input:
           "results/{cohort, [A-Z]}/{id}.qza"
      output:
-          table="results/{cohort}/{id}+dd_table+rrf0.qza",
+          table="results/{cohort}/{id}+dd_table.qza",
 	     stats="results/{cohort}/{id}+dd_stats.qza",
 	     repseq="results/{cohort}/{id}+dd_seq.qza"
      message:
@@ -322,7 +322,7 @@ rule rarefy:
           - snakemake --cores 10 --use-conda results/CH/CH_bb16t_dd-table_rrf1000.qza
      """
      input:
-          "results/{cohort}/{id}_table+rrf0.qza"
+          "results/{cohort}/{id}_table"
      output:
           "results/{cohort}/{id}_table+rrf{r}.qza"
      conda:
@@ -620,10 +620,10 @@ rule export_phyloseq:
           rarefication is possible in R after uploading the object to R
      """
      input:
-          biom="results/{cohort}/{id}+cls-{cls}+rrf0.biom",
+          biom="results/{cohort}/{id}+cls-{cls}_asv.biom",
           tree="results/{cohort}/{id}+fasttree.nwk"
      output:
-          "results/{cohort}/{id}+cls-{cls}+rrf0+phyloseq.RDS"
+          "results/{cohort}/{id}+cls-{cls}+phyloseq.RDS"
      conda:
           "envs/phyloseq.yml"
      shell:
@@ -838,7 +838,7 @@ rule summary:
           "results/{cohort}/{id}+rrf{r}+beta_unweightedunifrac.csv",
           "results/{cohort}/{id}+cls-{cls}+rrf{r}+otu_tax.biom",
           "results/{cohort}/{id}+cls-{cls}+rrf{r}+otu_tax_biom.tsv",
-          "results/{cohort}/{id}+cls-{cls}+rrf0+phyloseq.RDS",
+          "results/{cohort}/{id}+cls-{cls}+phyloseq.RDS",
           "results/{cohort}/{id}+rrf{r}+alphadiversity.tsv",
           "results/{cohort}/{id}+cls-{cls}+rrf{r}+manta.tsv",
           "results/{cohort}/{id}+cls-{cls}+rrf{r}+manta_tax.tsv",
