@@ -129,7 +129,7 @@ rule manifest:
      input:
           "data/{cohort, [A-Z]}/"
      output:
-          "results/{cohort, [A-Z]}/{cohort}_manifest.tsv"
+          "results/{cohort}/{cohort}_manifest.tsv"
      conda:
           "envs/other.yml"
      shell:
@@ -151,7 +151,7 @@ rule import_data:
           Import the raw fastq files to Qiime2 artifact with qza extension
      """
      input:
-          "results/{cohort, [A-Z]}/{cohort, [A-Z]}_manifest.tsv" 
+          "results/{cohort}/{cohort}_manifest.tsv" 
      output:
           "results/{cohort}/{cohort}.qza"
      message:
