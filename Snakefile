@@ -193,7 +193,7 @@ rule trim_fastp:
      input:
           qza="results/{cohort, [A-Z]}/{id}.qza"
      output:
-          "results/{cohort}/{id}+fp-f{len1}-r{len2}crop.qza"
+          "results/{cohort}/{id}+fp-f{lqen1}-r{len2}crop.qza"
      message:
           "Trimming using fastp"
      conda: 
@@ -694,10 +694,10 @@ rule extract_unifrac_csv:
 
 rule merge_dadatable:
      input:
-          f1="results/{cohort1}/{cohort1}_{id}_table+rrf{r}.qza",
-          f2="results/{cohort2}/{cohort2}_{id}_table+rrf{r}.qza"
+          f1="results/{cohort1}/{cohort1}_{id}_table.qza",
+          f2="results/{cohort2}/{cohort2}_{id}_table.qza"
      output:
-          "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}+{id}_table+rrf{r}.qza"
+          "results/{cohort1}-{cohort2}/{cohort1}-{cohort2}+{id}_table.qza"
      conda:
           qiime_env
      shell:
