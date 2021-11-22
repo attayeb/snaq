@@ -151,7 +151,7 @@ rule import_data:
           Import the raw fastq files to Qiime2 artifact with qza extension
      """
      input:
-          "results/{cohort}/{cohort}_manifest.tsv" 
+          "results/{cohort}/{cohort, [A-Z]}_manifest.tsv" 
      output:
           "results/{cohort}/{cohort}.qza"
      message:
