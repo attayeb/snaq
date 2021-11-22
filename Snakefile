@@ -322,7 +322,7 @@ rule rarefy:
           - snakemake --cores 10 --use-conda results/CH/CH_bb16t_dd-table_rrf1000.qza
      """
      input:
-          "results/{cohort}/{id}_table"
+          "results/{cohort}/{id}_table.qza"
      output:
           "results/{cohort}/{id}_table+rrf{r}.qza"
      conda:
