@@ -561,10 +561,10 @@ rule make_biom:
           snakemake --cores 10 --use-conda results/CH/CH_fp-17f-21rcrop_bb14t_dd_cls-gg_rrf10000.biom
      """
      input:
-          table="results/{cohort}/{id}_table+rrf{r}.qza",
+          table="results/{cohort}/{id}_table.qza",
           taxonomy="results/{cohort}/{id}+cls-{cls}_taxonomy.qza"
      output:
-          "results/{cohort}/{id}+cls-{cls}+rrf{r}.biom"
+          "results/{cohort}/{id}+cls-{cls}_asv.biom"
      message:
           "Making biom table {output}"
      conda: 
