@@ -59,7 +59,7 @@ rule export_artifact:
 
 def get_allfile_names(wildcards):
      """Get all files from a folder"""
-     input_folder = os.path.join("temp", wildcards.cohort, wildcards.cohort+"+"+wildcards.id)
+     input_folder = os.path.join("temp", wildcards.cohort, wildcards.id)
      return " ".join([os.path.join(input_folder, x) for x in os.listdir(input_folder) if "fastq" in x])
 
 
