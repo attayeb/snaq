@@ -159,7 +159,7 @@ rule qza_cohort_multiqc:
      conda:
           "envs/quality.yml"
      shell:
-          "multiqc -o {output} {input}"
+          "multiqc -dd 2 -d -o {output} {input}"
 
 rule manifest:
      """Create manifest file
