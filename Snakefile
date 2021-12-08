@@ -27,6 +27,37 @@ rule explain:
      shell:
           "cat {input}"
 
+rule export_artifact_2:
+     """Export Artifact content to a folder
+       Input
+       -----
+          QIIME2 Artifact file (qza)
+     
+       Output
+       ------
+          Directory contains the content of the Artifact
+     
+       Tools
+       -----
+          export command from qiime tools
+     
+       Actions
+       -------
+          Export the artifact content to ouput folder"""
+     message:
+          "Extracting artifact"
+     input:
+          "results/{cohort}/{cohort}.qza"
+     output:
+          directory("temp/{cohort}/{cohort}/")
+     conda:
+          qiime_env
+     shell:
+          "qiime tools export "
+          "--input-path {input} "
+          "--output-path {output}"
+
+
 
 rule export_artifact:
      """Export Artifact content to a folder
@@ -45,6 +76,8 @@ rule export_artifact:
        Actions
        -------
           Export the artifact content to ouput folder"""
+     message:
+          "Extracting artifact"
      input:
           "results/{cohort}/{cohort}+{etc}.qza"
      output:
@@ -88,6 +121,8 @@ rule qza_fastqc:
      Output: fastq report html file.
      Action: Run fastqc quality control analysis
      """
+     message:
+          "Applying FASTQC"
      input:
           "temp/{cohort}/{id}"          
      output:
@@ -103,6 +138,8 @@ rule qza_fastqc:
           "fastqc -o {output} -f fastq -t {threads} {params}"
 
 rule qza_multiqc:
+     message:
+          "MultiQC"
      input:
           "quality/{cohort}/{id}/fastqc/"
      output:
@@ -126,6 +163,8 @@ rule manifest:
        -----
           utilizes scripts/create_manifest_file.py script
      """
+     message:
+          "Creating manifest file"
      input:
           "data/{cohort, [A-Z]}/"
      output:
@@ -150,6 +189,8 @@ rule import_data:
        ------
           Import the raw fastq files to Qiime2 artifact with qza extension
      """
+     message:
+          "Import data using manifest file"
      input:
           "results/{cohort}/{cohort}_manifest.tsv" 
      output:
