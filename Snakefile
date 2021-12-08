@@ -149,6 +149,18 @@ rule qza_multiqc:
      shell:
           "multiqc -o {output} {input}"
 
+rule qza_cohort_multiqc:
+     message:
+          "MultiQC"
+     input:
+          "quality/{cohort}/fastqc/"
+     output:
+          directory("quality/{cohort}/multiqc/")
+     conda:
+          "envs/quality.yml"
+     shell:
+          "multiqc -o {output} {input}"
+
 rule manifest:
      """Create manifest file
        Input
