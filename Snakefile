@@ -153,7 +153,7 @@ rule qza_cohort_multiqc:
      message:
           "MultiQC"
      input:
-          "quality/{cohort}/fastqc/"
+          "quality/{cohort}/"
      output:
           directory("quality/{cohort}/multiqc/")
      conda:
