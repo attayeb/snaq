@@ -4,7 +4,10 @@ Snakemake pipeline for analyzing 16S RNA data using QIIME2
 Usage
 -----
 
-snakemake 
+The simplest command is:
+
+snakemake --cores 10 --use-conda results/AB/AB+fp-f17-r21crop+bb18t+dd+cls-gg+rrf10000.zip
+
 
 """
 from platform import system
@@ -43,7 +46,7 @@ rule export_artifact_2:
      
        Actions
        -------
-          Export the artifact content to ouput folder"""
+          Export the artifact content to output folder"""
      message:
           "Extracting artifact"
      input:
@@ -116,10 +119,17 @@ rule qza_fastqc:
      """  Fastqc
      Input
      -----
-          Artifact of type  
-          Fastq files
-     Output: fastq report html file.
-     Action: Run fastqc quality control analysis
+          Artifact of type SampleData[PairedEndSequencesWithQuality]
+
+     Output
+     ------
+          fastqc report folder.
+
+     
+     Action
+     ------
+     
+     Run fastqc quality control analysis
      """
      message:
           "Applying FASTQC"
