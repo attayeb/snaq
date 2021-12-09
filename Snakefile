@@ -116,7 +116,7 @@ rule help:
                     pass
           
 rule qza_fastqc:
-     """  Fastqc
+     """Fastqc
      Input
      -----
           Artifact of type SampleData[PairedEndSequencesWithQuality]
@@ -148,6 +148,11 @@ rule qza_fastqc:
           "fastqc -o {output} -f fastq -t {threads} {params}"
 
 rule qza_multiqc:
+     """Combines multiple Fastqc reports using MultiQC. This rule works for one folder.
+
+     target example:
+     quality/AB/AB+bb18/multiqc
+     """
      message:
           "MultiQC"
      input:
@@ -160,12 +165,16 @@ rule qza_multiqc:
           "multiqc -o {output} {input}"
 
 rule qza_cohort_multiqc:
+     """Combines multiple Fastqc reports using Multiqc. This rule combines all the FastqC reports of one cohort. The target should be:
+     
+     /quality/AB/multiqc
+     """
      message:
           "MultiQC"
      input:
           "quality/{cohort}/"
      output:
-          directory("quality/{cohort}/multiqc/")
+          directory("quality/{cohort, [A-Z]}/multiqc/")
      conda:
           "envs/quality.yml"
      shell:
@@ -251,7 +260,7 @@ rule trim_fastp:
           fp-f17-r21crop : trims 17 bases from forward read and 21 bases form backward read.
      
           ex:
-          snakemake --cores 10 --use-conda results/CH/CH_fp-f17-r21.qza
+          snakemake --cores 10 --use-conda results/CH/CH+fp-f17-r21.qza
      """
      input:
           qza="results/{cohort, [A-Z]}/{id}.qza"
