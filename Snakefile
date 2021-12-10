@@ -164,6 +164,16 @@ rule qza_multiqc:
      shell:
           "multiqc -o {output} {input}"
 
+rule download_names_and_taxonpath:
+     output:
+          taxonpath = "db/taxonpath.json",
+          names = "db/names.json"
+     shell:
+          """
+          wget https://github.com/attayeb/snaq/releases/download/testing/names.json"
+          wget https://github.com/attayeb/snaq/releases/download/testing/taxonpath.json
+          """
+
 rule qza_cohort_multiqc:
      """Combines multiple Fastqc reports using Multiqc. This rule combines all the FastqC reports of one cohort. The target should be:
      
