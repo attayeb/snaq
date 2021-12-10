@@ -115,3 +115,4 @@ AB+bb16t+fp-f17-r21crop+dd_table+rrf10000.csv
 AB+bb16t+fp-f17-r21crop+dd_table+rrf10000.qza
 AB+bb16t+fp-f17-r21crop.qza
 ```
+For more details please check the paper.
