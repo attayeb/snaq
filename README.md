@@ -2,13 +2,21 @@
 
 Snaq is a snakemake pipeline for Microbiome data analsysis using QIIME2
 
+This pipeline works natively in Linux, Mac and windows on WSL (basically ubuntu). It also can run using docker container system in windows.
+
 ## Citation:
+TBD
+
+
 
 ## Installation
 
-This pipeline works natively in Linux, Mac and windows on WSL (basically ubuntu). It also can run using docker container system in windows.
+
 
 ### Linux and Mac and windows using [WSL](https://docs.microsoft.com/en-us/windows/wsl/install)
+
+All these steps should be executed in the terminal
+
 * [Install conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)
 
 * Install mamba:
@@ -21,18 +29,29 @@ conda activate base
 mamba create -c conda-forge -c bioconda -n snakemake snakemake
 conda activate snakemake
 ```
-clone this repository or download zipped release file:
+download the latest release file of this repository:
 ```bash
-$ To be determined soon
+$ wget https://github.com/attayeb/snaq/archive/refs/tags/testing.zip
+$ unzip testing.zip
 ```
 
+Test the integrity of the pipeline by executing:
+```
+cd snaq-testing2
+snakemake -lt
+```
 ### Windows with docker:
 * [Install docker desktop in windows](https://docs.docker.com/desktop/windows/install/)
 * Using command  or windows [PowerShell](https://en.wikipedia.org/wiki/PowerShell) clone docker image for snakemake by sending this command:
 ```
 docker pull snakemake/snakemake
 ```
-* Clone this repository or copy the zipped release file and extract it in your favourite folder.
+* Download the latest release [Source code (zip)](https://github.com/attayeb/snaq/archive/refs/tags/testing2.zip) from github repository, and extract it.
+
+* check the integrity of the pipeline by sending this command:
+```
+docker run -it snakemake/snakemake snakemake -lt
+```
 
 ## How to do the analysis:
 
@@ -49,7 +68,7 @@ Snaq will follow that manifest file if you provide it. Keep a copy of that manif
 * Docker need few tricks, it runs inside a container, it is like running another computer inside your machine, this computer is isolated from the host if you don't tell the container to use your file system, moreover, if you use the file system inside the docker container, you will lose the data as soon as you stop your docker container. So, what we do is snakemake is already installed inside the image we are going to use. To run snakemake we need to give it access to our pipeline folder. so give it in the command line like this:
     - map your working directory to ```/work``` directory inside the contianer by using this command ```-v c:\snaq\:/work```
     - tell docker to use ```/work``` folder as your working directory. so when you go to ```/work``` directory, whatever you do will be saved in your working directory outside.
-    - Start running commands after you set these parameters and other parameters like ```-it``` to make the container interactive and terminate it as soon as the code is finished. also we need to give the container name ```snakemake/snakemake``` This [image] (https://hub.docker.com/r/snakemake/snakemake) is created by snakemake developers.\ 
+    - Start running commands after you set these parameters and other parameters like ```-it``` to make the container interactive and terminate it as soon as the code is finished. also we need to give the container name ```snakemake/snakemake``` This [image] (https://hub.docker.com/r/snakemake/snakemake) is created by snakemake developers. \ 
 
 
 ```
@@ -57,5 +76,8 @@ Snaq will follow that manifest file if you provide it. Keep a copy of that manif
 ```
 
 ```
-docker run -it -v d:\dustbox\snaq-test\:/work -w /work snakemake/snakemake snakemake --use-conda --cores 10 results/SRA-SRC/SRA-SRC+bb16t+fp-f17-r21crop+dd+cls-silva+rrf10000.zip
+docker run -it -v d:\dustbox\snaq-test\:/work -w /work snakemake/snakemake snakemake --use-conda --cores 10 results/SRA/SRA+bb16t+fp-f17-r21crop+dd+cls-silva+rrf10000.zip
 ```
+
+## Example dataset:
+is available for testing [test data set](https://github.com/attayeb/snaq/releases/download/testing/AB.tar.gz); download it and extract it in data folder.
