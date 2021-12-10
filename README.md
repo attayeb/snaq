@@ -55,29 +55,70 @@ docker run -it snakemake/snakemake snakemake -lt
 
 ## How to do the analysis:
 
+
 * Create a new folder inside data folder use only letters in capital to name it, no spaces. Eg: AB, CONTROL, COHORTONE etc.
 
 
 * Copy your paired-end fastq files to the folder, check the identifier of the R1 and R2 is it is \_R1\_ and \_R2\_ or _1 and _2 then Snaq will understand and differentate the R1 and R2 files. If any other identifiers are used, please prepare a manifest file and copy it to results/COHORT/ folder.\
 Snaq will follow that manifest file if you provide it. Keep a copy of that manifest file somewhere outside the pipeline folder, because it could be overwritten by mistake.
-* You need to send the snakemake command with basically two needed parameters ```--cores 10 --use-conda```, These two parameters are essential to run the analysis.
-* After applied these two parameters you write the target. For example for an artifact of AB the target should be ```results/AB/AB.qza```. Snakemake will understand to import the data set saved in ```data/AB``` to ```AB.qza```; That will be done in two steps, first a manifest file is created, ```result/AB/AB_manifest.qza``` and then the real ```results/AB/AB.qza``` will be created.
+* You need to send the snakemake command with basically two needed parameters ```--cores <number of cores> --use-conda```, These two parameters are essential to run the analysis.
+* After these two parameters you type the analysis target. For example to import the data to QIIME2, an artifact will be created with .qza extension. To do that for a cohort names "AB" the target should be ```results/AB/AB.qza```. Snakemake will understand to import the data set saved in ```data/AB``` folder to ```results/AB/AB.qza``` artifact file; That will be done in two steps, first a manifest file is created, ```result/AB/AB_manifest.qza``` and then the files listed in that manifest files will be imported to ```results/AB/AB.qza```.
 
-* For a docker you need to send the command docker to run the pipeline. It is simple, you need to pull the image of snakemake, 
+## Few important points about docker
+* Docker creates a container depending on an image, The image can be created or downloaded. The command ```docker pull snakemake/snakemake``` will download the required image to run sanakemake.
+* When ```docker run -it snakemake/snakemake``` is executed, a container will be built which basically means running a small virtual linux PC inside your host system, and whatever command you send after that will run inside that virtual PC.
+* For example if you send command ```docker run -it snakemake/snakemake snakemake``` then the snakemake software will run inside that created container. 
+* As soon as you stop running the docker container it resets back to original status, whatever modification you make are not permenant.
+* If you want changes to remain, you can link a folder from host machine to the container, and the container will save, modify, read from that folder, for that we use ```-v``` parameter in docker command. To map the pipeline folder to a folder inside the container you can:
+```docker run -it -v c:\snaq:/snaq -w /snaq snakemake/snakemake```
 
-* Docker need few tricks, it runs inside a container, it is like running another computer inside your machine, this computer is isolated from the host if you don't tell the container to use your file system, moreover, if you use the file system inside the docker container, you will lose the data as soon as you stop your docker container. So, what we do is snakemake is already installed inside the image we are going to use. To run snakemake we need to give it access to our pipeline folder. so give it in the command line like this:
-    - map your working directory to ```/work``` directory inside the contianer by using this command ```-v c:\snaq\:/work```
-    - tell docker to use ```/work``` folder as your working directory. so when you go to ```/work``` directory, whatever you do will be saved in your working directory outside.
-    - Start running commands after you set these parameters and other parameters like ```-it``` to make the container interactive and terminate it as soon as the code is finished. also we need to give the container name ```snakemake/snakemake``` This [image] (https://hub.docker.com/r/snakemake/snakemake) is created by snakemake developers. \ 
+* This command will start a container using sankemake image, and linke c:\snaq folder in the windows host PC to /work folder inside the container, and it make the working directory /snaq. So what ever command you send will run inside /snaq folder, any change done will be permenant in that folder.
 
+To run a basic task in docker then the the command should be like this
 
 ```
--v c:\snaq\:/work -w /work 
-```
-
-```
-docker run -it -v d:\dustbox\snaq-test\:/work -w /work snakemake/snakemake snakemake --use-conda --cores 10 results/SRA/SRA+bb16t+fp-f17-r21crop+dd+cls-silva+rrf10000.zip
+docker run -it -v [snaq folder in windows]:/snaq -w /snaq snakemake/snakemake snakemake --use-conda --cores 10 results/AB/AB+bb16t+fp-f17-r21crop+dd+cls-silva+rrf10000.zip
 ```
 
 ## Example dataset:
 is available for testing [test data set](https://github.com/attayeb/snaq/releases/download/testing/AB.tar.gz); download it and extract it in data folder.
+
+Possible targets are:
+
+```
+
+AB+bb12t.qza
+
+AB+bb14t.qza
+AB+bb16t+fp-f17-r21crop+dd+cls-gg_asv.biom
+AB+bb16t+fp-f17-r21crop+dd+cls-gg+phyloseq.RDS
+AB+bb16t+fp-f17-r21crop+dd+cls-gg+rrf10000+beta_braycurtis.tsv
+AB+bb16t+fp-f17-r21crop+dd+cls-gg+rrf10000+beta_jaccard.tsv
+AB+bb16t+fp-f17-r21crop+dd+cls-gg+rrf10000+manta_tax.tsv
+AB+bb16t+fp-f17-r21crop+dd+cls-gg+rrf10000+manta.tsv
+AB+bb16t+fp-f17-r21crop+dd+cls-gg+rrf10000+otu_tax.biom
+AB+bb16t+fp-f17-r21crop+dd+cls-gg+rrf10000+otu_tax_biom.tsv
+AB+bb16t+fp-f17-r21crop+dd+cls-gg+rrf10000+otu_tax.qza
+AB+bb16t+fp-f17-r21crop+dd+cls-gg+rrf10000.zip
+AB+bb16t+fp-f17-r21crop+dd+cls-gg_taxonomy.csv
+AB+bb16t+fp-f17-r21crop+dd+cls-gg_taxonomy.qza
+AB+bb16t+fp-f17-r21crop+dd+fasttree.nwk
+AB+bb16t+fp-f17-r21crop+dd+fasttree_rooted.qza
+AB+bb16t+fp-f17-r21crop+dd+rrf10000+alphadiversity.tsv
+AB+bb16t+fp-f17-r21crop+dd+rrf10000+beta_unweightedunifrac.csv
+AB+bb16t+fp-f17-r21crop+dd+rrf10000+beta_unweightedunifrac.qza
+AB+bb16t+fp-f17-r21crop+dd+rrf10000+beta_weightedunifrac.csv
+AB+bb16t+fp-f17-r21crop+dd+rrf10000+beta_weightedunifrac.qza
+AB+bb16t+fp-f17-r21crop+dd_seq.csv
+AB+bb16t+fp-f17-r21crop+dd_seq.qza
+AB+bb16t+fp-f17-r21crop+dd_stats.qza
+AB+bb16t+fp-f17-r21crop+dd_table.qza
+AB+bb16t+fp-f17-r21crop+dd_table+rrf10000.csv
+AB+bb16t+fp-f17-r21crop+dd_table+rrf10000.qza
+AB+bb16t+fp-f17-r21crop.qza
+AB+bb16t.qza
+AB+bb18t.qza
+AB+bb22t.qza
+AB_manifest.tsv
+AB.qza
+```
