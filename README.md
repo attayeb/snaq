@@ -86,10 +86,8 @@ is available for testing [test data set](https://github.com/attayeb/snaq/release
 Possible targets are:
 
 ```
-
-AB+bb12t.qza
-
-AB+bb14t.qza
+AB_manifest.tsv
+AB.qza
 AB+bb16t+fp-f17-r21crop+dd+cls-gg_asv.biom
 AB+bb16t+fp-f17-r21crop+dd+cls-gg+phyloseq.RDS
 AB+bb16t+fp-f17-r21crop+dd+cls-gg+rrf10000+beta_braycurtis.tsv
@@ -116,9 +114,4 @@ AB+bb16t+fp-f17-r21crop+dd_table.qza
 AB+bb16t+fp-f17-r21crop+dd_table+rrf10000.csv
 AB+bb16t+fp-f17-r21crop+dd_table+rrf10000.qza
 AB+bb16t+fp-f17-r21crop.qza
-AB+bb16t.qza
-AB+bb18t.qza
-AB+bb22t.qza
-AB_manifest.tsv
-AB.qza
 ```
