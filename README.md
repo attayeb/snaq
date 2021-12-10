@@ -43,3 +43,19 @@ docker pull snakemake/snakemake
 Snaq will follow that manifest file if you provide it. Keep a copy of that manifest file somewhere outside the pipeline folder, because it could be overwritten by mistake.
 * You need to send the snakemake command with basically two needed parameters ```--cores 10 --use-conda```, These two parameters are essential to run the analysis.
 * After applied these two parameters you write the target. For example for an artifact of AB the target should be ```results/AB/AB.qza```. Snakemake will understand to import the data set saved in ```data/AB``` to ```AB.qza```; That will be done in two steps, first a manifest file is created, ```result/AB/AB_manifest.qza``` and then the real ```results/AB/AB.qza``` will be created.
+
+* For a docker you need to send the command docker to run the pipeline. It is simple, you need to pull the image of snakemake, 
+
+* Docker need few tricks, it runs inside a container, it is like running another computer inside your machine, this computer is isolated from the host if you don't tell the container to use your file system, moreover, if you use the file system inside the docker container, you will lose the data as soon as you stop your docker container. So, what we do is snakemake is already installed inside the image we are going to use. To run snakemake we need to give it access to our pipeline folder. so give it in the command line like this:
+    - map your working directory to ```/work``` directory inside the contianer by using this command ```-v c:\snaq\:/work```
+    - tell docker to use ```/work``` folder as your working directory. so when you go to ```/work``` directory, whatever you do will be saved in your working directory outside.
+    - Start running commands after you set these parameters and other parameters like ```-it``` to make the container interactive and terminate it as soon as the code is finished. also we need to give the container name ```snakemake/snakemake``` This [image] (https://hub.docker.com/r/snakemake/snakemake) is created by snakemake developers.\ 
+
+
+```
+-v c:\snaq\:/work -w /work 
+```
+
+```
+docker run -it -v d:\dustbox\snaq-test\:/work -w /work snakemake/snakemake snakemake --use-conda --cores 10 results/SRA-SRC/SRA-SRC+bb16t+fp-f17-r21crop+dd+cls-silva+rrf10000.zip
+```
