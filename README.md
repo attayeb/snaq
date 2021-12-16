@@ -15,11 +15,11 @@ Under preparation.
 
 * Install Ubuntu for windows 10 following the instructions in this [website](https://ubuntu.com/tutorials/ubuntu-on-windows#1-overview) 
 
-* In "Ubuntu bash command line" install and test the pipeline following the following steps mentioned in Linux and Mac.
+* In "Ubuntu bash command line" install and test the pipeline following the same steps mentioned in Linux and Mac.
 
 ### Linux, Mac
 
-All these steps should be executed in the terminal (linux and Mac) or (Ubuntu command prompt) in windows, 
+All these steps should be executed in the terminal (linux and Mac) or (Ubuntu bash command line) in windows, 
 
 * [Install conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)
 
@@ -28,6 +28,7 @@ All these steps should be executed in the terminal (linux and Mac) or (Ubuntu co
 conda install -n base -c conda-forge mamba
 ```
 * [Install snakemake](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html):
+
 ```bash
 conda activate base
 mamba create -c conda-forge -c bioconda -n snakemake snakemake
@@ -35,8 +36,8 @@ conda activate snakemake
 ```
 download the latest release file of this repository:
 ```bash
-$ wget https://github.com/attayeb/snaq/archive/refs/tags/testing.zip
-$ unzip testing.zip
+wget https://github.com/attayeb/snaq/archive/refs/tags/testing.zip
+unzip testing.zip
 ```
 
 
