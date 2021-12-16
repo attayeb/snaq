@@ -11,9 +11,9 @@ Under preparation.
 
 ## Installation
 
-### Linux, Mac and Windows subsystems for Linux [WSL](https://docs.microsoft.com/en-us/windows/wsl/install)
+### Linux, Mac
 
-All these steps should be executed in the terminal
+All these steps should be executed in the terminal (linux and Mac) or (Ubuntu command prompt) in windows, 
 
 * [Install conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)
 
@@ -33,11 +33,13 @@ $ wget https://github.com/attayeb/snaq/archive/refs/tags/testing.zip
 $ unzip testing.zip
 ```
 
-Test the integrity of the pipeline by executing:
-```
-cd snaq-testing2
-snakemake -lt
-```
+### Windows Subsystem for Linux.
+
+* Install Ubuntu for windows 10 following the instructions in this [website](https://ubuntu.com/tutorials/ubuntu-on-windows#1-overview) 
+
+* In "Ubuntu bash command line" install and test the pipeline following the previous steps mentioned in Linux and Mac.
+
+
 ### Docker works for (Windows, Mac and Linux):
 * [Install docker](https://docs.docker.com/get-docker/)
 * Using Terminal, command prompt, or windows [PowerShell](https://en.wikipedia.org/wiki/PowerShell) depending on your system, clone docker image for snakemake by sending this command:
@@ -75,7 +77,7 @@ Snaq will follow that manifest file if you provide it. Keep a copy of that manif
 To run a basic task in docker then the the command should be like this
 
 ```
-docker run -it -v [snaq folder in windows]:/snaq -w /snaq snakemake/snakemake snakemake --use-conda --cores 10 results/AB/AB+bb16t+fp-f17-r21crop+dd+cls-silva+rrf10000.zip
+docker run -it -v [snaq folder in host system]:/snaq -w /snaq snakemake/snakemake snakemake --use-conda --cores 10 results/AB/AB+bb16t+fp-f17-r21crop+dd+cls-silva+rrf10000.zip
 ```
 
 ## Example dataset:
