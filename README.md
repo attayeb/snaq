@@ -5,13 +5,11 @@ Snaq is a snakemake pipeline for Microbiome data analsysis using QIIME2
 This pipeline works natively in Linux, Mac and windows on WSL (basically ubuntu). It also can run using docker container system in windows.
 
 ## Citation:
-Under preparation
+Under preparation.
 
 
 
 ## Installation
-
-
 
 ### Linux, Mac and Windows subsystems for Linux [WSL](https://docs.microsoft.com/en-us/windows/wsl/install)
 
@@ -40,9 +38,9 @@ Test the integrity of the pipeline by executing:
 cd snaq-testing2
 snakemake -lt
 ```
-### Windows with docker:
-* [Install docker desktop in windows](https://docs.docker.com/desktop/windows/install/)
-* Using command  or windows [PowerShell](https://en.wikipedia.org/wiki/PowerShell) clone docker image for snakemake by sending this command:
+### Docker works for (Windows, Mac and Linux):
+* [Install docker](https://docs.docker.com/get-docker/)
+* Using Terminal, command prompt, or windows [PowerShell](https://en.wikipedia.org/wiki/PowerShell) depending on your system, clone docker image for snakemake by sending this command:
 ```
 docker pull snakemake/snakemake
 ```
