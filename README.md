@@ -15,7 +15,7 @@ Under preparation.
 
 * In "Ubuntu bash command line" install and test the pipeline following the same steps mentioned in Linux and Mac.
 
-### Linux, Mac
+### Linux and Mac
 
 All these steps should be executed in the terminal (linux and Mac) or (Ubuntu bash command line) in windows, 
 
@@ -37,9 +37,6 @@ download the latest release file of this repository:
 wget https://github.com/attayeb/snaq/archive/refs/tags/testing.zip
 unzip testing.zip
 ```
-
-
-
 
 ### Docker (works for Windows, Mac and Linux):
 * [Install docker](https://docs.docker.com/get-docker/)
