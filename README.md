@@ -11,6 +11,12 @@ Under preparation.
 
 ## Installation
 
+### Windows Subsystem for Linux.
+
+* Install Ubuntu for windows 10 following the instructions in this [website](https://ubuntu.com/tutorials/ubuntu-on-windows#1-overview) 
+
+* In "Ubuntu bash command line" install and test the pipeline following the following steps mentioned in Linux and Mac.
+
 ### Linux, Mac
 
 All these steps should be executed in the terminal (linux and Mac) or (Ubuntu command prompt) in windows, 
@@ -33,11 +39,7 @@ $ wget https://github.com/attayeb/snaq/archive/refs/tags/testing.zip
 $ unzip testing.zip
 ```
 
-### Windows Subsystem for Linux.
 
-* Install Ubuntu for windows 10 following the instructions in this [website](https://ubuntu.com/tutorials/ubuntu-on-windows#1-overview) 
-
-* In "Ubuntu bash command line" install and test the pipeline following the previous steps mentioned in Linux and Mac.
 
 
 ### Docker works for (Windows, Mac and Linux):
