@@ -406,7 +406,7 @@ rule rarefy:
      input:
           "results/{cohort}/{id}_table.qza"
      output:
-          "results/{cohort}/{id}_table+rrf{r}.qza"
+          "results/{cohort}/{id}_table+rrf-d{r, \d+}.qza"
      conda:
           qiime_env
      shell:
@@ -714,10 +714,10 @@ rule export_phyloseq:
 
 rule weighted_unifrac:
      input:
-          table="results/{cohort}/{id}_table+rrf{r}.qza",
+          table="results/{cohort}/{id}_table+rrf-d{r}.qza",
           tree="results/{cohort}/{id}+fasttree_rooted.qza"
      output:
-          "results/{cohort}/{id}+rrf{r}+beta_weightedunifrac.qza"
+          "results/{cohort}/{id}+rrf-d{r}+beta_weightedunifrac.qza"
      conda:
           qiime_env
      shell:
@@ -727,10 +727,10 @@ rule weighted_unifrac:
 
 rule unweighted_unifrac:
      input:
-          table="results/{cohort}/{id}_table+rrf{r}.qza",
+          table="results/{cohort}/{id}_table+rrf-d{r}.qza",
           tree="results/{cohort}/{id}+fasttree_rooted.qza"
      output:
-          "results/{cohort}/{id}+rrf{r}+beta_unweightedunifrac.qza"
+          "results/{cohort}/{id}+rrf-d{r}+beta_unweightedunifrac.qza"
      conda:
           qiime_env
      shell:
@@ -751,9 +751,9 @@ rule extract_taxonomy_csv:
 
 rule extract_dadatable_csv:
      input:
-          "results/{cohort}/{id}_table+rrf{r}.qza"           
+          "results/{cohort}/{id}_table+rrf-d{r}.qza"           
      output:
-          "results/{cohort}/{id}_table+rrf{r}.csv"
+          "results/{cohort}/{id}_table+rrf-d{r}.csv"
      conda:
           qiime_env
      shell:
@@ -820,10 +820,10 @@ rule merge_taxonomy:
 
 rule collapse_tax:
      input:
-          table="results/{cohort}/{cohort}+{id}+dd_table+rrf{r}.qza",
+          table="results/{cohort}/{cohort}+{id}+dd_table+rrf-d{r}.qza",
           tax="results/{cohort}/{cohort}+{id}+dd+{etc}_taxonomy.qza"
      output:
-          "results/{cohort}/{cohort}+{id}+dd+{etc}+rrf{r}+otu_tax.qza"
+          "results/{cohort}/{cohort}+{id}+dd+{etc}+rrf-d{r}+otu_tax.qza"
      conda:
           qiime_env
      shell:
@@ -846,10 +846,10 @@ rule create_metadata_file:
 
 rule core_metrics:
      input:
-          table="results/{cohort}/{id}_table+rrf{r}.qza",
+          table="results/{cohort}/{id}_table+rrf-d{r}.qza",
           metadata="results/{cohort}/{cohort}_metadata.tsv"
      output:
-          directory("results/{cohort}/{id}+rrf{r}+coremetrics/")
+          directory("results/{cohort}/{id}+rrf-d{r}+coremetrics/")
      threads:
           30
      conda:
@@ -864,9 +864,9 @@ rule core_metrics:
 
 rule alpha_diversity:
      input:
-          "results/{cohort}/{id}_table+rrf{r}.qza"
+          "results/{cohort}/{id}_table+rrf-d{r}.qza"
      output:
-          "results/{cohort}/{id}+rrf{r}+alphadiversity.tsv"
+          "results/{cohort}/{id}+rrf-d{r}+alphadiversity.tsv"
      conda:
           qiime_env          
      shell:
@@ -875,12 +875,12 @@ rule alpha_diversity:
 
 rule beta_diversity:
      input:
-          "results/{cohort}/{id}+rrf{r}+otu_tax.qza"
+          "results/{cohort}/{id}+rrf-d{r}+otu_tax.qza"
      output:
-          "results/{cohort}/{id}+rrf{r}+beta_braycurtis.tsv",
-          "results/{cohort}/{id}+rrf{r}+beta_jaccard.tsv",
+          "results/{cohort}/{id}+rrf-d{r}+beta_braycurtis.tsv",
+          "results/{cohort}/{id}+rrf-d{r}+beta_jaccard.tsv",
      params:
-          "results/{cohort}/{id}+rrf{r}+beta.tsv"
+          "results/{cohort}/{id}+rrf-d{r}+beta.tsv"
      conda:
           qiime_env
      shell:
@@ -898,12 +898,12 @@ rule biom_to_tsv:
 
 rule manta:
      input:
-          tsv="results/{cohort}/{id}+cls-{cls}+rrf{r}+otu_tax_biom.tsv",
+          tsv="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+otu_tax_biom.tsv",
           taxonpath="db/taxonpath.json",
           names="db/names.json"
      output:
-          full="results/{cohort}/{id}+cls-{cls}+rrf{r}+manta.tsv",
-          tax="results/{cohort}/{id}+cls-{cls}+rrf{r}+manta_tax.tsv"
+          full="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta.tsv",
+          tax="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_tax.tsv"
      params:
           db=lambda wildcards: "1" if wildcards.cls=="gg" else "2"
      conda:
@@ -915,23 +915,23 @@ rule manta:
 rule summary:
      input:
           "results/{cohort}/{id}+cls-{cls}_taxonomy.csv",
-          "results/{cohort}/{id}_table+rrf{r}.csv",
-          "results/{cohort}/{id}+rrf{r}+beta_weightedunifrac.csv",
-          "results/{cohort}/{id}+rrf{r}+beta_unweightedunifrac.csv",
-          "results/{cohort}/{id}+cls-{cls}+rrf{r}+otu_tax.biom",
-          "results/{cohort}/{id}+cls-{cls}+rrf{r}+otu_tax_biom.tsv",
+          "results/{cohort}/{id}_table+rrf-d{r}.csv",
+          "results/{cohort}/{id}+rrf-d{r}+beta_weightedunifrac.csv",
+          "results/{cohort}/{id}+rrf-d{r}+beta_unweightedunifrac.csv",
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+otu_tax.biom",
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+otu_tax_biom.tsv",
           "results/{cohort}/{id}+cls-{cls}+phyloseq.RDS",
-          "results/{cohort}/{id}+rrf{r}+alphadiversity.tsv",
-          "results/{cohort}/{id}+cls-{cls}+rrf{r}+manta.tsv",
-          "results/{cohort}/{id}+cls-{cls}+rrf{r}+manta_tax.tsv",
+          "results/{cohort}/{id}+rrf-d{r}+alphadiversity.tsv",
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta.tsv",
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_tax.tsv",
           "results/{cohort}/{id}_seq.csv",
-          "results/{cohort}/{id}+cls-{cls}+rrf{r}+beta_braycurtis.tsv",
-          "results/{cohort}/{id}+cls-{cls}+rrf{r}+beta_jaccard.tsv"
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+beta_braycurtis.tsv",
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+beta_jaccard.tsv"
           #"results/{cohort}/plots/{id}_stats.pdf"
 
 
      output:
-          "results/{cohort}/{id}+cls-{cls}+rrf{r}.zip"
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}.zip"
      conda:
           "envs/other.yml"
      shell:
