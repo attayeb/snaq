@@ -275,7 +275,7 @@ rule trim_fastp:
      input:
           qza="results/{cohort, [A-Z]}/{id}.qza"
      output:
-          "results/{cohort}/{id}+fp-f{len1}-r{len2}crop.qza"
+          "results/{cohort}/{id}+fp-f{len1}-r{len2}.qza"
      message:
           "Trimming using fastp"
      conda: 
@@ -314,7 +314,7 @@ rule trim_bbduk:
      input:
           qza="results/{cohort, [A-Z]}/{id}.qza"
      output:
-          "results/{cohort}/{id}+bb{threshold}t.qza"
+          "results/{cohort}/{id}+bb-t{threshold}.qza"
      message:
           "Trimming using bbduk"
      params:
