@@ -136,7 +136,7 @@ rule qza_fastqc:
      input:
           "temp/{cohort}/{id}"          
      output:
-          directory("quality/{cohort}/{id}/fastqc/")
+          directory("results/{cohort}/quality/{id}/fastqc/")
      threads:
           20
      conda:
@@ -156,9 +156,9 @@ rule qza_multiqc:
      message:
           "MultiQC"
      input:
-          "quality/{cohort}/{id}/fastqc/"
+          "results/{cohort}/quality/{id}/fastqc/"
      output:
-          directory("quality/{cohort}/{id}/multiqc/")
+          directory("results/{cohort}/quality/{id}/multiqc/")
      conda:
           "envs/quality.yml"
      shell:
@@ -182,9 +182,9 @@ rule qza_cohort_multiqc:
      message:
           "MultiQC"
      input:
-          "quality/{cohort}/"
+          "results/{cohort}/quality/"
      output:
-          directory("quality/{cohort, [A-Z]}/multiqc/")
+          directory("results/{cohort, [A-Z]}/quality/multiqc/")
      conda:
           "envs/quality.yml"
      shell:
