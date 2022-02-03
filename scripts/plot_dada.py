@@ -12,8 +12,9 @@ from qiime2 import Metadata
 def plot_dada(inp, plot):
     art = Artifact.load(inp)
     df = art.view(Metadata).to_dataframe()
+    plt.figure(figsize=(5, 5), dpi=100)
     sns.displot(x='percentage of input non-chimeric', data=df)
-    plt.savefig(plot, dpi=300, width=10, height=10)
+    plt.savefig(plot)
 
 if __name__ == "__main__":
     plot_dada()
