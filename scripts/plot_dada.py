@@ -15,8 +15,9 @@ def plot_dada(inp, plot):
     plt.figure(figsize=(5, 5), dpi=100)
     sns.displot(x='percentage of input non-chimeric', data=df)
     plt.title(plot.split("/")[-1].replace("+dd_stats.jpg", ""))
-    plt.xlim([0, 100])
     plt.tight_layout()
+    plt.xlim([0, 100])
+    
     plt.savefig(plot)
 
 if __name__ == "__main__":
