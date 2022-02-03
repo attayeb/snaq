@@ -14,6 +14,8 @@ opt = parse_args(opt_parser)
 
 #print(opt$biom)
 ps <- phyloseq::import_biom(opt$biom, treefilename=opt$tree)
-
+df <- tidyr::separate(as.data.frame(tax_table(ps)), "Rank1", c("Rank1", "Rank2", "Rank3", "Rank4", "Rank5", "Rank6", "Rank7"), sep=";")
+df[is.na(df)] <- ""
+tax_table(ps) <- df
 
 saveRDS(ps, opt$outp)
