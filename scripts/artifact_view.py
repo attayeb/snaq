@@ -14,11 +14,11 @@ def export(artifact, filename, filetype):
 
     if filetype=="metadata":        
         df = Artifact.load(artifact).view(Metadata).to_dataframe()
-        df.to_csv(filename)
+        df.to_csv(filename, sep="\t")
     
     if filetype=="distance":        
         df = Artifact.load(artifact).view(DistanceMatrix).to_data_frame()
-        df.to_csv(filename)
+        df.to_csv(filename, sep="\t")
 
     if filetype=="biom":
         taxonomy_levels = ['kingdum', 'phylum', 'class', 'order', 'family', 'genus', 'species']

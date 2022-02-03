@@ -669,11 +669,11 @@ rule extract_biom:
           "--filename {output} --filetype biom"
 
 rule extract_sequence:
-     """Auxillary rule to exract dada2 ASV sequences from (qza) Artifact to csv file"""
+     """Auxillary rule to exract dada2 ASV sequences from (qza) Artifact to tsv file"""
      input:
           "results/{cohort}/{cohort}+{id}+dd_seq.qza"
      output:
-          "results/{cohort}/{cohort}+{id}+dd_seq.csv"
+          "results/{cohort}/{cohort}+{id}+dd_seq.tsv"
      conda:
           qiime_env
      shell:
@@ -738,33 +738,33 @@ rule unweighted_unifrac:
           "--i-table {input.table} --i-phylogeny {input.tree} "
           "--o-distance-matrix {output}"
 
-rule extract_taxonomy_csv:
+rule extract_taxonomy_tsv:
      input:
           "results/{cohort}/{id}_taxonomy.qza"
      output:
-          "results/{cohort}/{id}_taxonomy.csv"
+          "results/{cohort}/{id}_taxonomy.tsv"
      conda:
           qiime_env
      shell:
           "python scripts/artifact_view.py --artifact {input} "
           "--filename {output} --filetype metadata"
 
-rule extract_dadatable_csv:
+rule extract_dadatable_tsv:
      input:
           "results/{cohort}/{id}_table+rrf-d{r}.qza"           
      output:
-          "results/{cohort}/{id}_table+rrf-d{r}.csv"
+          "results/{cohort}/{id}_table+rrf-d{r}.tsv"
      conda:
           qiime_env
      shell:
           "python scripts/artifact_view.py --artifact {input} "
           "--filename {output} --filetype metadata"
 
-rule extract_unifrac_csv:
+rule extract_unifrac_tsv:
      input:
           "results/{cohort}/{id}unifrac.qza"           
      output:
-          "results/{cohort}/{id}unifrac.csv"
+          "results/{cohort}/{id}unifrac.tsv"
      conda:
           qiime_env
      shell:
@@ -914,17 +914,17 @@ rule manta:
 
 rule summary:
      input:
-          "results/{cohort}/{id}+cls-{cls}_taxonomy.csv",
-          "results/{cohort}/{id}_table+rrf-d{r}.csv",
-          "results/{cohort}/{id}+rrf-d{r}+beta_weightedunifrac.csv",
-          "results/{cohort}/{id}+rrf-d{r}+beta_unweightedunifrac.csv",
+          "results/{cohort}/{id}+cls-{cls}_taxonomy.tsv",
+          "results/{cohort}/{id}_table+rrf-d{r}.tsv",
+          "results/{cohort}/{id}+rrf-d{r}+beta_weightedunifrac.tsv",
+          "results/{cohort}/{id}+rrf-d{r}+beta_unweightedunifrac.tsv",
           "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+otu_tax.biom",
           "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+otu_tax_biom.tsv",
           "results/{cohort}/{id}+cls-{cls}+phyloseq.RDS",
           "results/{cohort}/{id}+rrf-d{r}+alphadiversity.tsv",
           "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta.tsv",
           "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_tax.tsv",
-          "results/{cohort}/{id}_seq.csv",
+          "results/{cohort}/{id}_seq.tsv",
           "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+beta_braycurtis.tsv",
           "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+beta_jaccard.tsv"
           #"results/{cohort}/plots/{id}_stats.pdf"
