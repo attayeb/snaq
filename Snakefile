@@ -147,14 +147,6 @@ rule qza_fastqc:
           "mkdir {output} && "
           "fastqc -o {output} -f fastq -t {threads} {params}"
 
-rule id_multiqc:
-     input:
-          "results/{cohort}/quality/{id}/multiqc/"
-     output:
-          directory("results/{cohort}/quality/{id}/")
-     shell:
-          "echo  "
-
 rule qza_multiqc:
      """Combines multiple Fastqc reports using MultiQC. This rule works for one folder.
 
