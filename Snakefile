@@ -437,7 +437,7 @@ rule dada_stats_report:
      input:
           get_dada_pdfs
      output:
-          "results/{cohort}/dada_stats.pdf"
+          "results/{cohort}/{cohort}+dada_stats.pdf"
      conda:
           "envs/other.yml"
      shell:
