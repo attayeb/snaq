@@ -426,6 +426,25 @@ rule plot_dada_stats:
           "python scripts/plot_dada.py --inp {input} --plot {output}"
 
 
+def get_dada_pdfs(wildcards):
+     """Get all files from a folder"""
+     input_folder = os.path.join(wildcards.cohort)
+     ret = [os.path.join(input_folder, x) for x in os.listdir(input_folder) if "dd_stats.qza" in x]
+     ret = [x.replace("qza", "pdf") for x in ret]
+     return ",".join(ret)
+
+rule dada_stats_report:
+     input:
+          get_dada_pdfs
+     output:
+          "results/{cohort}/dada_stats.pdf"
+     conda:
+          "envs/other.yml"
+     shell:
+          "python scripts/report_stats.py --inp {input} --outp {output}"
+
+
+
 rule download_silva_classifier:
      """ Download pretrained SILVA taxonomy classifier
      output
