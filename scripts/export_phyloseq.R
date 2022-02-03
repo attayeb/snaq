@@ -1,5 +1,6 @@
 suppressMessages(library(optparse))
 suppressMessages(library(phyloseq))
+suppressMessages(library(dplyr))
 option_list = list(
     make_option(c("-b", "--biom"),
     type="character"),
