@@ -1,6 +1,8 @@
 import click
 from reportlab.platypus import SimpleDocTemplate, Image
 from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import cm
+
 
 @click.command()
 @click.option("--inp")
@@ -11,7 +13,7 @@ def make_report(inp, outp):
                         rightMargin=72,leftMargin=72,
                         topMargin=72,bottomMargin=18)
     for plot_file in inp.split(","):
-            story.append(Image(plot_file))
+            story.append(Image(plot_file, width=10*cm))
 
     doc.build(story)
 
