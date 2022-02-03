@@ -380,9 +380,8 @@ rule dada2:
 	     "--verbose --p-n-threads {threads}"
 
 
-rule rarefy:
-     """Dada2 table file rarefication
-       input
+rule rarefy:dd_stats.qza" in x]
+     ret = [x.replace("qza", "pdf") for x in ret]
        -----
           ARTIFACT FeatureTable[Frequency]
        Output 
