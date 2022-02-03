@@ -680,6 +680,18 @@ rule extract_sequence:
           "python scripts/artifact_view.py --artifact {input} "
           "--filename {output} --filetype metadata"
 
+rule extract_stats:
+     """Auxillary rule to exract dada2 ASV sequences from (qza) Artifact to tsv file"""
+     input:
+          "results/{cohort}/{cohort}+{id}+dd_stats.qza"
+     output:
+          "results/{cohort}/{cohort}+{id}+dd_stats.tsv"
+     conda:
+          qiime_env
+     shell:
+          "python scripts/artifact_view.py --artifact {input} "
+          "--filename {output} --filetype metadata"
+
 rule export_phyloseq:
      """Create Phyloseq object RDS file
        Input
