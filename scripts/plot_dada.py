@@ -13,7 +13,7 @@ def plot_dada(inp, plot):
     art = Artifact.load(inp)
     df = art.view(Metadata).to_dataframe()
     sns.displot(x='percentage of input non-chimeric', data=df)
-    plt.savefig(plot)
+    plt.savefig(plot, dpi=300)
 
 if __name__ == "__main__":
     plot_dada()
