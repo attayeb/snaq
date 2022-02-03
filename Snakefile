@@ -431,17 +431,17 @@ def get_dada_pdfs(wildcards):
      ret = [os.path.join(input_folder, x) for x in os.listdir(input_folder) if "+dd_stats.qza" in x]
      ret = [x.replace(".qza", ".pdf") for x in ret]
      print(ret)
-     return " ".join(ret)
+     return ",".join(ret)
 
 rule dada_stats_report:
-     input:
-          get_dada_pdfs
      output:
           "results/{cohort}/{cohort}_dada_stats.pdf"
      conda:
           "envs/other.yml"
+     params:
+          get_dada_pdfs
      shell:
-          "python scripts/report_stats.py --inp {input} --outp {output}"
+          "python scripts/report_stats.py --inp {prarms} --outp {output}"
 
 
 
