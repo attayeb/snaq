@@ -184,7 +184,7 @@ rule qza_cohort_multiqc:
      input:
           "results/{cohort}/quality/"
      output:
-          directory("results/{cohort, [A-Z]}/quality/multiqc/")
+          directory("results/{cohort, [A-Z]}/quality/summary/")
      conda:
           "envs/quality.yml"
      shell:
