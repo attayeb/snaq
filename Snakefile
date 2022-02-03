@@ -431,6 +431,7 @@ def get_dada_pdfs(wildcards):
      input_folder = os.path.join("results", wildcards.cohort)
      ret = [os.path.join(input_folder, x) for x in os.listdir(input_folder) if "+dd_stats.qza" in x]
      ret = [x.replace(".qza", ".pdf") for x in ret]
+     print(ret)
      return " ".join(ret)
 
 rule dada_stats_report:
