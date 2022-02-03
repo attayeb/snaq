@@ -84,7 +84,7 @@ rule export_artifact:
      input:
           "results/{cohort, [A-Z]}/{cohort}+{etc}.qza"
      output:
-          directory("temp/{cohort}/{cohort}+{etc}/")
+          directory("temp/{cohort}/{cohort}+{etc}")
      conda:
           qiime_env
      shell:
@@ -146,6 +146,14 @@ rule qza_fastqc:
      shell:
           "mkdir {output} && "
           "fastqc -o {output} -f fastq -t {threads} {params}"
+
+rule id_multiqc:
+     input:
+          "results/{cohort}/quality/{id}/multiqc/"
+     output:
+          directory("results/{cohort}/quality/{id}/")
+     prython:
+          pass
 
 rule qza_multiqc:
      """Combines multiple Fastqc reports using MultiQC. This rule works for one folder.
