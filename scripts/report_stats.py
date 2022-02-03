@@ -13,7 +13,7 @@ def make_report(inp, outp):
     for plot_file in inp.split(","):
             story.append(Image(plot_file))
 
-    doc.build()
+    doc.build(story)
 
 if __name__ == "__main__":
     make_report()
