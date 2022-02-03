@@ -13,7 +13,7 @@ def make_report(inp, outp):
                         rightMargin=72,leftMargin=72,
                         topMargin=72,bottomMargin=18)
     for plot_file in inp.split(","):
-            story.append(Image(plot_file, width=10*cm))
+            story.append(Image(plot_file, width=3*cm))
 
     doc.build(story)
 
