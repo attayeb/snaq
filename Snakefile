@@ -430,18 +430,26 @@ def get_dada_pdfs(wildcards):
      input_folder = os.path.join("results", wildcards.cohort)
      ret = [os.path.join(input_folder, x) for x in os.listdir(input_folder) if "+dd_stats.qza" in x]
      ret = [x.replace(".qza", ".pdf") for x in ret]
-     print(ret)
+     return ret
+
+def get_dada_pdfs_comma_separated(wildcards):
+     """Get dada2_pdf_stats.pdf files from a folder"""
+     input_folder = os.path.join("results", wildcards.cohort)
+     ret = [os.path.join(input_folder, x) for x in os.listdir(input_folder) if "+dd_stats.qza" in x]
+     ret = [x.replace(".qza", ".pdf") for x in ret]
      return ",".join(ret)
 
 rule dada_stats_report:
+     input:
+          get_dada_pdfs
      output:
           "results/{cohort}/{cohort}_dada_stats.pdf"
      conda:
           "envs/other.yml"
      params:
-          get_dada_pdfs
+          get_dada_pdfs_comma_separated
      shell:
-          "python scripts/report_stats.py --inp {prarms} --outp {output}"
+          "python scripts/report_stats.py --inp {params} --outp {output}"
 
 
 
