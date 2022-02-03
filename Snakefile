@@ -50,7 +50,7 @@ rule export_artifact_2:
      message:
           "Extracting artifact"
      input:
-          "results/{cohort}/{cohort}.qza"
+          "results/{cohort, [A-Z]}/{cohort}.qza"
      output:
           directory("temp/{cohort}/{cohort}/")
      conda:
@@ -82,7 +82,7 @@ rule export_artifact:
      message:
           "Extracting artifact"
      input:
-          "results/{cohort}/{cohort}+{etc}.qza"
+          "results/{cohort, [A-Z]}/{cohort}+{etc}.qza"
      output:
           directory("temp/{cohort}/{cohort}+{etc}/")
      conda:
