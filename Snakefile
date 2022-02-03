@@ -419,7 +419,7 @@ rule plot_dada_stats:
      input:
           "results/{cohort}/{id}+dd_stats.qza"
      output:
-          "results/{cohort}/plots/{id}+dd_stats.pdf"
+          "results/{cohort}/{id}+dd_stats.pdf"
      conda:
           qiime_env
      shell:
