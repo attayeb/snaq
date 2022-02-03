@@ -14,7 +14,7 @@ def plot_dada(inp, plot):
     df = art.view(Metadata).to_dataframe()
     plt.figure(figsize=(5, 5), dpi=100)
     sns.displot(x='percentage of input non-chimeric', data=df)
-    plt.title(plot.split("/")[:1].replace(".jpg", ""))
+    plt.title(plot.split("/")[:1][0].replace(".jpg", ""))
     plt.savefig(plot)
 
 if __name__ == "__main__":
