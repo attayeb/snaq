@@ -152,7 +152,7 @@ rule id_multiqc:
           "results/{cohort}/quality/{id}/multiqc/"
      output:
           directory("results/{cohort}/quality/{id}/")
-     prython:
+     run:
           pass
 
 rule qza_multiqc:
