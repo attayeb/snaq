@@ -1,3 +1,7 @@
+<p align="center">
+<img src="snaq.svg">
+</p>
+
 # Snaq Pipeline
 
 Snaq is a snakemake pipeline for Microbiome data analsysis using QIIME2.
