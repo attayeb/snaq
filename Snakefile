@@ -109,6 +109,8 @@ rule download_names_and_taxonpath:
           names = "db/names.json"
      shell:
           """
+          mkdir db
+          cd db 
           wget https://github.com/attayeb/snaq/releases/download/testing/names.json
           wget https://github.com/attayeb/snaq/releases/download/testing/taxonpath.json
           """
