@@ -170,7 +170,9 @@ rule trim_fastp:
      conda: 
           qiime_env
      shell:
-          "python scripts/fastp.py --inputf {input} --len1 {wildcards.len1} --len2 {wildcards.len2} --outputf {output}"
+          "python scripts/fastp.py --inputf {input} "
+          "--len1 {wildcards.len1} --len2 {wildcards.len2} "
+          "--outputf {output}"
 
 
 rule trim_bbduk:
@@ -181,12 +183,11 @@ rule trim_bbduk:
           "results/{cohort}/{id}+bb-t{threshold, \d+}.qza"
      message:
           "Trimming using bbduk"
-     params:
-          lambda wildcards, output: output[0].replace(".qza", ".log")
      conda: 
           qiime_env
      shell:
-          "python scripts/bbduk.py -i {input} -q {wildcards.threshold} -o {output} > {params}"
+          "python scripts/bbduk.py -i {input} "
+          "-q {wildcards.threshold} -o {output}"
 
 
 rule dada2:
@@ -274,7 +275,8 @@ rule download_silva_classifier:
      conda:
           "envs/other.yml"
      shell:
-          "cd classifiers && wget https://zenodo.org/record/5535616/files/silva-classifier.qza"
+          "cd classifiers && "
+          "wget https://zenodo.org/record/5535616/files/silva-classifier.qza"
 
 rule download_gg_classifier:
      """Download GreenGenes taxonomy classifier"""
@@ -463,7 +465,9 @@ rule export_phyloseq:
      conda:
           "envs/phyloseq.yml"
      shell:
-          "Rscript scripts/export_phyloseq.R --biom {input.biom} --tree {input.tree} --outp {output}"
+          "Rscript scripts/export_phyloseq.R "
+          "--biom {input.biom} --tree {input.tree} "
+          "--outp {output}"
           
 
 rule weighted_unifrac:
@@ -675,8 +679,10 @@ rule manta:
      conda:
           "envs/other.yml"
      shell:
-          "python scripts/manta.py -i {input.tsv} -o {output.full} -x {output.tax} "
-          "-t {input.taxonpath} -n {input.names} -d {params.db} -r {wildcards.r}"
+          "python scripts/manta.py "
+          "-i {input.tsv} -o {output.full} -x {output.tax} "
+          "-t {input.taxonpath} -n {input.names} "
+          "-d {params.db} -r {wildcards.r}"
 
 rule summary:
      """Produces summarized results in zipped file"""
