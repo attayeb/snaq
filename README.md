@@ -1,5 +1,5 @@
 <p align="center">
-<img src="snaq.svg">
+<img src="logo_snaq.png">
 </p>
 
 # Snaq Pipeline
