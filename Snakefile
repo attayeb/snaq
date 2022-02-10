@@ -7,9 +7,8 @@ Usage
 The simplest command is:
 
 snakemake --cores 10 --use-conda results/AB/AB+fp-f17-r21+bb-t18+cls-gg+rrf10000.zip
-
-
 """
+
 from platform import system
 
 _os = system()
@@ -154,10 +153,10 @@ rule import_data:
           qiime_env
      shell:
           "qiime tools import "
-	     "--type 'SampleData[PairedEndSequencesWithQuality]' "
-	     "--input-path {input} "
-	     "--input-format PairedEndFastqManifestPhred33V2 "
-	     "--output-path {output} "
+          "--type 'SampleData[PairedEndSequencesWithQuality]' "
+          "--input-path {input} "
+          "--input-format PairedEndFastqManifestPhred33V2 "
+          "--output-path {output} "
 
 
 rule trim_fastp:
@@ -191,13 +190,13 @@ rule trim_bbduk:
 
 
 rule dada2:
-     """Dada2 algorithm""" 
+     """Dada2 algorithm"""
      input:
           "results/{cohort, [A-Z]}/{id}.qza"
      output:
           table="results/{cohort}/{id}+dd_table.qza",
-	     stats="results/{cohort}/{id}+dd_stats.qza",
-	     repseq="results/{cohort}/{id}+dd_seq.qza"
+          stats="results/{cohort}/{id}+dd_stats.qza",
+          repseq="results/{cohort}/{id}+dd_seq.qza"
      message:
           "Dada2 analysis"
      threads: 30
@@ -205,12 +204,12 @@ rule dada2:
           qiime_env    
      shell:
           "qiime dada2 denoise-paired "
-	     "--p-trunc-len-f 0 --p-trunc-len-r 0 "
-	     "--i-demultiplexed-seqs {input} "
-	     "--o-table {output.table} "
-	     "--o-representative-sequences {output.repseq} "
-	     "--o-denoising-stats {output.stats} "
-	     "--verbose --p-n-threads {threads}"
+          "--p-trunc-len-f 0 --p-trunc-len-r 0 "
+          "--i-demultiplexed-seqs {input} "
+          "--o-table {output.table} "
+          "--o-representative-sequences {output.repseq} "
+          "--o-denoising-stats {output.stats} "
+          "--verbose --p-n-threads {threads}"
 
 
 rule rarefy:
@@ -269,7 +268,7 @@ rule dada_stats_report:
 
 
 rule download_silva_classifier:
-     """ Download pretrained SILVA taxonomy classifier"""
+     """Download pretrained SILVA taxonomy classifier"""
      output:
           "classifiers/silva-classifier.qza"
      conda:
@@ -278,7 +277,7 @@ rule download_silva_classifier:
           "cd classifiers && wget https://zenodo.org/record/5535616/files/silva-classifier.qza"
 
 rule download_gg_classifier:
-     """ Download GreenGenes taxonomy classifier"""
+     """Download GreenGenes taxonomy classifier"""
      output:
           "classifiers/gg-classifier.qza"
      conda:
@@ -288,7 +287,7 @@ rule download_gg_classifier:
           "wget https://zenodo.org/record/5535616/files/gg-classifier.qza"
 
 rule download_silvav34_classifier:
-     """ Download V3-V4 region pretrained SILVA classifier."""
+     """Download V3-V4 region pretrained SILVA classifier."""
      output:
           "classifiers/silvaV34-classifier.qza"
      conda:
@@ -302,7 +301,7 @@ rule taxonomy:
      """Assign taxonomy to ASVs"""
      input:
           seq = "results/{cohort}/{id}_seq.qza",
-	     classifier = "classifiers/{cls}-classifier.qza"
+          classifier = "classifiers/{cls}-classifier.qza"
      output:
           taxonomy= "results/{cohort}/{id}+cls-{cls}_taxonomy.qza",
      conda: 
@@ -312,13 +311,13 @@ rule taxonomy:
           "Assign taxonomy using {wildcards.cls} database"
      shell:
           "qiime feature-classifier classify-sklearn "
-	     "--i-classifier {input.classifier} "
-	     "--i-reads {input.seq} --p-n-jobs {threads} "
-	     "--o-classification {output.taxonomy}"
+          "--i-classifier {input.classifier} "
+          "--i-reads {input.seq} --p-n-jobs {threads} "
+          "--o-classification {output.taxonomy}"
 
 
 rule mafft:
-     """ Creating phylogenetic tree step 1 """
+     """Creating phylogenetic tree step 1 """
      input:
           "results/{cohort}/{id}_seq.qza"
      output:
@@ -333,7 +332,7 @@ rule mafft:
           "--o-alignment {output}"
 
 rule alignment_mask:
-     """ Creating phylogenic tree step 2
+     """Creating phylogenic tree step 2
      """
      input:
           "results/{cohort}/tree/{id}_seqaligned.qza"
@@ -349,7 +348,7 @@ rule alignment_mask:
           "--o-masked-alignment {output}"
 
 rule fasttree:
-     """ Creating phylogenetic tree step 3 
+     """Creating phylogenetic tree step 3 
      """
      input:
           "results/{cohort}/tree/{id}_seqaligned_masked.qza"
@@ -365,7 +364,7 @@ rule fasttree:
           "--o-tree {output}"
 
 rule midpoint_root:
-     """ Creating phylogenetic tree step 4
+     """Creating phylogenetic tree step 4
      """
      input:
           "results/{cohort}/tree/{id}+fasttree.qza"
@@ -382,7 +381,7 @@ rule midpoint_root:
 
 
 rule export_tree:
-     """ Creating phylogenitic tree step 5: Exporting tree from Artifact file
+     """Creating phylogenitic tree step 5: Exporting tree from Artifact file
      """
      input:
           "results/{cohort}/{id}+fasttree_rooted.qza"
@@ -395,12 +394,11 @@ rule export_tree:
      params:
           "results/{cohort}/{id}+fasttree_rooted"
      shell:
-          """qiime tools export \
-               --input-path {input} \
-               --output-path {params} 
-          cp {params}/tree.nwk {output}
-
-          rm -r {params}"""
+          "qiime tools export "
+          "--input-path {input} "
+          "--output-path {params} && "
+          "cp {params}/tree.nwk {output} && "
+          "rm -r {params}"
     
 
 rule make_biom:
@@ -696,7 +694,6 @@ rule summary:
           "results/{cohort}/{id}_seq.tsv",
           "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+beta_braycurtis.tsv",
           "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+beta_jaccard.tsv"
-          #"results/{cohort}/plots/{id}_stats.pdf"
      output:
           "results/{cohort}/{id}+cls-{cls}+rrf-d{r}.zip"
      conda:
@@ -704,7 +701,7 @@ rule summary:
      shell:
           "zip -j {output} {input}"
 
-#ruleorder: trim_bbduk > trim_fastp
+
 ruleorder: merge_taxonomy > taxonomy > manifest
 ruleorder: merge_dadatable > rarefy > manifest
 ruleorder: export_phyloseq  > extract_biom
