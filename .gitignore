@@ -10,7 +10,6 @@ fastqc/
 kmer/
 old/
 documentation/
-db/
 
 # keep folders
 !data/.gitkeep
