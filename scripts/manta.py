@@ -11,10 +11,11 @@ def get_rank_from_ncbi(rank, taxonomy, taxonpath):
     ret1 = []    
     for x in ret:
         try:
-            txp = taxonpath.get(x[max([i for i in range(len(x)) if x[i] is not None])], empty_rank)
+            max_id = x[max([i for i in range(len(x)) if x[i] is not None])]
+            txp = taxonpath.get(max_id, empty_rank)
             item = []
         except Exception as e:
-            print(e)
+            print(x)
             print(txp)
         
         for r in ['k', 'p', 'c', 'o', 'f', 'g', 's']:
