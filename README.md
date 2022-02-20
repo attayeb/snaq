@@ -61,7 +61,7 @@ docker run -it snakemake/snakemake snakemake -lt
 * Create a new folder inside data folder use only letters in capital to name it, no spaces. Eg: AB, CONTROL, COHORTONE etc.
 
 
-* Copy your paired-end fastq files to the folder, check the identifier of the R1 and R2 is it is \_R1\_ and \_R2\_ or _1 and _2 then Snaq will understand and differentate the R1 and R2 files. If any other identifiers are used, please prepare a manifest file and copy it to results/COHORT/ folder.\
+* Copy your paired-end fastq files to the folder, check the identifier of the R1 and R2 is it is \_R1\_ and \_R2\_ or _1 and _2 then Snaq will understand and differentate the R1 and R2 files. If any other identifiers are used, please prepare a manifest file and copy it to results/<DATASET>/ folder.\
 Snaq will follow that manifest file if you provide it. Keep a copy of that manifest file somewhere outside the pipeline folder, because it could be overwritten by mistake.
 * You need to send the snakemake command with basically two needed parameters ```--cores <number of cores> --use-conda```, These two parameters are essential to run the analysis.
 * After these two parameters you type the analysis target. For example to import the data to QIIME2, an artifact will be created with .qza extension. To do that for a cohort names "AB" the target should be ```results/AB/AB.qza```. Snakemake will understand to import the data set saved in ```data/AB``` folder to ```results/AB/AB.qza``` artifact file; That will be done in two steps, first a manifest file is created, ```result/AB/AB_manifest.qza``` and then the files listed in that manifest files will be imported to ```results/AB/AB.qza```.

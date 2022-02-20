@@ -2,11 +2,15 @@ import pandas as pd
 import json
 import click
 
+empty_rank = {
+    'k': '', 'p':'', 'c':'', 'o':'', 'f':'','g':'','s':''
+}
+
 def get_rank_from_ncbi(rank, taxonomy, taxonpath):
     ret = [[taxonomy.get(x[3:]) for x in y] for y in rank]
-    ret1 = []
+    ret1 = []    
     for x in ret:
-        txp = taxonpath[x[max([i for i in range(len(x)) if x[i] is not None])]]
+        txp = taxonpath.get(x[max([i for i in range(len(x)) if x[i] is not None])], empty_rank)
         item = []
         
         for r in ['k', 'p', 'c', 'o', 'f', 'g', 's']:
