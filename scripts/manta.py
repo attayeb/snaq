@@ -10,20 +10,20 @@ def get_rank_from_ncbi(rank, taxonomy, taxonpath):
     ret = [[taxonomy.get(x[3:]) for x in y] for y in rank]
     ret1 = []    
     for x in ret:
-        try:
+        if x == [None, None, None, None, None, None, None]:
+            next
+        else:
             max_id = x[max([i for i in range(len(x)) if x[i] is not None])]
             txp = taxonpath.get(max_id, empty_rank)
             item = []
-        except Exception as e:
-            print(x)
-            print(txp)
         
-        for r in ['k', 'p', 'c', 'o', 'f', 'g', 's']:
-            _item = txp[r]
-            if _item == "":
-                _item = "uc"
-            item.append(_item)
-        ret1.append(item)
+        
+            for r in ['k', 'p', 'c', 'o', 'f', 'g', 's']:
+                _item = txp[r]
+                if _item == "":
+                    _item = "uc"
+                item.append(_item)
+            ret1.append(item)
     return ret1
 
 @click.command()
