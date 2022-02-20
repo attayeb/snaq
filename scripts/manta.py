@@ -14,7 +14,7 @@ def get_rank_from_ncbi(rank, taxonomy, taxonpath):
             txp = taxonpath.get(x[max([i for i in range(len(x)) if x[i] is not None])], empty_rank)
             item = []
         except Exception as e:
-            print e
+            print(e)
             print(txp)
         
         for r in ['k', 'p', 'c', 'o', 'f', 'g', 's']:
