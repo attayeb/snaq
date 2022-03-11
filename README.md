@@ -38,7 +38,7 @@ conda activate snakemake
 ```
 download the latest release file of this repository:
 ```bash
-wget https://github.com/attayeb/snaq/archive/refs/tags/testing.zip
+wget https://github.com/attayeb/snaq/archive/refs/tags/v1.0.0.zip
 unzip testing.zip
 ```
 
@@ -48,7 +48,7 @@ unzip testing.zip
 ```
 docker pull snakemake/snakemake
 ```
-* Download the latest release [Source code (zip)](https://github.com/attayeb/snaq/archive/refs/tags/testing2.zip) from github repository, and extract it.
+* Download the latest release [Source code (zip)](https://github.com/attayeb/snaq/archive/refs/tags/v1.0.0.zip) from github repository, and extract it.
 
 * check the integrity of the pipeline by sending this command:
 ```
