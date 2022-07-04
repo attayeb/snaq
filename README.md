@@ -9,7 +9,9 @@ Snaq is a snakemake pipeline for Microbiome data analsysis using QIIME2.
 This pipeline works in Linux, Mac and Windows (Ubuntu on Windows). It also can run using Docker container system.
 
 ## Citation:
-Under preparation.
+
+Mohsen A, Chen Y-A, Allendes Osorio RS, Higuchi C and Mizuguchi K (2022) Snaq: A Dynamic Snakemake Pipeline for Microbiome Data Analysis With QIIME2. Front. Bioinform. 2:893933. doi: [10.3389/fbinf.2022.893933](https://doi.org/10.3389/fbinf.2022.893933)
+
 
 ## Installation
 
