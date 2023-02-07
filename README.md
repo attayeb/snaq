@@ -38,11 +38,7 @@ conda activate base
 mamba create -c conda-forge -c bioconda -n snakemake snakemake
 conda activate snakemake
 ```
-download the latest release file of this repository:
-```bash
-wget https://github.com/attayeb/snaq/archive/refs/tags/v1.0.0.zip
-unzip testing.zip
-```
+download the latest release file from this repository and extract it in a new folder:
 
 ### Docker (works for Windows, Mac and Linux):
 * [Install docker](https://docs.docker.com/get-docker/)
