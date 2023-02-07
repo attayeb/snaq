@@ -10,5 +10,5 @@
 
 ### Changed
 
-- Order of channerls in phyloseq.yaml to make sure they work smoothly with new updates.
+- Order of conda channels in phyloseq.yaml to make sure they work smoothly with new updates.
 - Use the new QIIME2 version 2023.2 as the default environment in Snakefile.
