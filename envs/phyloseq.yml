@@ -1,11 +1,11 @@
 channels:
-  - r
   - conda-forge
+  - r
   - bioconda
   - defaults
 dependencies:
   
-  - r-optparse
+  - r-optparse=1.7.3
   - r-base=4.1.1
   - r-vegan
   - r-essentials
