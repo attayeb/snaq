@@ -14,9 +14,9 @@ from platform import system
 _os = system()
 
 if _os == "Linux":
-     qiime_env = "envs/qiime2-2021.8-py38-linux-conda.yml"
+     qiime_env = "envs/qiime2-2023.2-py38-linux-conda.yml"
 elif _os == "Darwin":
-     qiime_env = "envs/qiime2-2021.8-py38-osx-conda.yml"
+     qiime_env = "envs/qiime2-2023.2-py38-osx-conda.yml"
 
 
 rule export_artifact_2:
