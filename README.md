@@ -38,7 +38,7 @@ conda activate base
 mamba create -c conda-forge -c bioconda -n snakemake snakemake
 conda activate snakemake
 ```
-download the latest release file from this repository and extract it in a new folder:
+download the latest release file from this repository and extract it in a new folder, or clone this repository:
 
 ### Docker (works for Windows, Mac and Linux):
 * [Install docker](https://docs.docker.com/get-docker/)
@@ -46,7 +46,7 @@ download the latest release file from this repository and extract it in a new fo
 ```
 docker pull snakemake/snakemake
 ```
-* Download the latest release [Source code (zip)](https://github.com/attayeb/snaq/archive/refs/tags/v1.0.0.zip) from github repository, and extract it.
+* Download the latest release [Source code (zip)](https://github.com/attayeb/snaq/archive/refs/tags/v1.0.1.zip) from github repository, and extract it, or clone this repository.
 
 * check the integrity of the pipeline by sending this command:
 ```
