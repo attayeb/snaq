@@ -77,7 +77,7 @@ Snaq will follow that manifest file if you provide it. Keep a copy of that manif
 To run a basic task in docker then the the command should be like this
 
 ```
-docker run -it -v [snaq folder in host system]:/snaq -w /snaq snakemake/snakemake snakemake --use-conda --cores 10 results/AB/AB+bb16t+fp-f17-r21crop+dd+cls-silva+rrf10000.zip
+docker run -rm -it -v [snaq folder in host system]:/snaq -w /snaq snakemake/snakemake snakemake --use-conda --cores 10 results/AB/AB+bb-t16+fp-f17-r21+dd+cls-silva+rrf10000.zip
 ```
 
 ## Example dataset:
