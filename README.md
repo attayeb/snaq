@@ -81,7 +81,7 @@ docker run --rm -it -v [snaq folder in host system]:/snaq -w /snaq snakemake/sna
 ```
 
 ## Example dataset:
-is available for testing: can be downloaded from [here](https://github.com/attayeb/snaq/releases/download/testing/AB.tar.gz); download it and extract it in data folder.
+is available for testing: can be downloaded from [here](https://github.com/attayeb/snaq/releases/download/data/AB.tar.gz); download it and extract it in data folder.
 
 Possible targets are:
 
