@@ -50,7 +50,7 @@ docker pull snakemake/snakemake
 
 * check the integrity of the pipeline by sending this command:
 ```
-docker run --rm -it snakemake/snakemake snakemake -lt
+docker run --rm -it -v "$PWD":/snaq -w /snaq snakemake/snakemake snakemake -lt
 ```
 
 ## How to do the analysis:
