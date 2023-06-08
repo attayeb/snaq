@@ -70,13 +70,13 @@ rule help:
                          cprint("")
                except:
                     pass
-          
+
 rule qza_fastqc:
      """Run fastqc quality control analysis"""
      message:
           "Applying FASTQC"
      input:
-          "temp/{cohort}/{id}"          
+          "temp/{cohort}/{id}"
      output:
           directory("results/{cohort}/quality/{id}/fastqc/")
      threads:
@@ -109,7 +109,7 @@ rule download_names_and_taxonpath:
           names = "db/names.json"
      shell:
           """
-          cd db 
+          cd db
           wget https://github.com/attayeb/snaq/releases/download/testing/names.json
           wget https://github.com/attayeb/snaq/releases/download/testing/taxonpath.json
           """
@@ -145,12 +145,12 @@ rule import_data:
      message:
           "Import data using manifest file"
      input:
-          "results/{cohort}/{cohort}_manifest.tsv" 
+          "results/{cohort}/{cohort}_manifest.tsv"
      output:
           "results/{cohort}/{cohort}.qza"
      message:
           "Import data"
-     conda: 
+     conda:
           qiime_env
      shell:
           "qiime tools import "
@@ -168,7 +168,7 @@ rule trim_fastp:
           "results/{cohort}/{id}+fp-f{len1, \d+}-r{len2, \d+}.qza"
      message:
           "Trimming using fastp"
-     conda: 
+     conda:
           qiime_env
      shell:
           "python scripts/fastp.py --inputf {input} "
@@ -184,7 +184,7 @@ rule trim_bbduk:
           "results/{cohort}/{id}+bb-t{threshold, \d+}.qza"
      message:
           "Trimming using bbduk"
-     conda: 
+     conda:
           qiime_env
      shell:
           "python scripts/bbduk.py -i {input} "
@@ -202,8 +202,8 @@ rule dada2:
      message:
           "Dada2 analysis"
      threads: 30
-     conda: 
-          qiime_env    
+     conda:
+          qiime_env
      shell:
           "qiime dada2 denoise-paired "
           "--p-trunc-len-f 0 --p-trunc-len-r 0 "
@@ -307,7 +307,7 @@ rule taxonomy:
           classifier = "classifiers/{cls}-classifier.qza"
      output:
           taxonomy= "results/{cohort}/{id}+cls-{cls}_taxonomy.qza",
-     conda: 
+     conda:
           qiime_env
      threads: 30
      message:
@@ -325,7 +325,7 @@ rule mafft:
           "results/{cohort}/{id}_seq.qza"
      output:
           "results/{cohort}/tree/{id}_seqaligned.qza"
-     conda: 
+     conda:
           qiime_env
      message:
           "Mafft alignment"
@@ -343,21 +343,21 @@ rule alignment_mask:
           "results/{cohort}/tree/{id}_seqaligned_masked.qza"
      message:
           "Alignment mask"
-     conda: 
-          qiime_env     
+     conda:
+          qiime_env
      shell:
           "qiime alignment mask "
           "--i-alignment {input} "
           "--o-masked-alignment {output}"
 
 rule fasttree:
-     """Creating phylogenetic tree step 3 
+     """Creating phylogenetic tree step 3
      """
      input:
           "results/{cohort}/tree/{id}_seqaligned_masked.qza"
      output:
           "results/{cohort}/tree/{id}+fasttree.qza"
-     conda: 
+     conda:
           qiime_env
      message:
           "creating tree"
@@ -375,7 +375,7 @@ rule midpoint_root:
           "results/{cohort}/{id}+fasttree_rooted.qza"
      message:
           "Midpoint rooting the tree"
-     conda: 
+     conda:
           qiime_env
      shell:
           "qiime phylogeny midpoint-root "
@@ -390,7 +390,7 @@ rule export_tree:
           "results/{cohort}/{id}+fasttree_rooted.qza"
      output:
           "results/{cohort}/{id}+fasttree.nwk"
-     conda: 
+     conda:
           qiime_env
      message:
           "Save the tree.nwk file"
@@ -402,7 +402,7 @@ rule export_tree:
           "--output-path {params} && "
           "cp {params}/tree.nwk {output} && "
           "rm -r {params}"
-    
+
 
 rule make_biom:
      """Create Biom table"""
@@ -413,7 +413,7 @@ rule make_biom:
           "results/{cohort}/{id}+cls-{cls}_asv.biom"
      message:
           "Making biom table {output}"
-     conda: 
+     conda:
           qiime_env
      shell:
           "python scripts/make_biom.py --tablef {input.table} "
@@ -469,7 +469,7 @@ rule export_phyloseq:
           "Rscript scripts/export_phyloseq.R "
           "--biom {input.biom} --tree {input.tree} "
           "--outp {output}"
-          
+
 
 rule weighted_unifrac:
      """Computes beta diversity weighted unifrac"""
@@ -514,7 +514,7 @@ rule extract_taxonomy_tsv:
 rule extract_dadatable_tsv:
      """converts dada table.qza to tsv"""
      input:
-          "results/{cohort}/{id}_table+rrf-d{r}.qza"           
+          "results/{cohort}/{id}_table+rrf-d{r}.qza"
      output:
           "results/{cohort}/{id}_table+rrf-d{r}.tsv"
      conda:
@@ -526,7 +526,7 @@ rule extract_dadatable_tsv:
 rule extract_unifrac_tsv:
      """converts unifrac qza artifact to tsv"""
      input:
-          "results/{cohort}/{id}unifrac.qza"           
+          "results/{cohort}/{id}unifrac.qza"
      output:
           "results/{cohort}/{id}unifrac.tsv"
      conda:
@@ -609,7 +609,7 @@ rule create_metadata_file:
           "envs/other.yml"
      shell:
           "python scripts/create_metadata_file.py -i {input} -o {output}"
-     
+
 
 rule core_metrics:
      input:
@@ -636,7 +636,7 @@ rule alpha_diversity:
      output:
           "results/{cohort}/{id}+rrf-d{r}+alphadiversity.tsv"
      conda:
-          qiime_env          
+          qiime_env
      shell:
           "python scripts/alpha_diversity.py --inp {input} "
           "--outp {output}"
@@ -673,17 +673,48 @@ rule manta:
           taxonpath="db/taxonpath.json",
           names="db/names.json"
      output:
-          full="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta.tsv",
-          tax="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_tax.tsv"
+          full="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta.csv",
+          tax="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_tax.csv",
+          abundant="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_abundant_tax.csv"
      params:
-          db=lambda wildcards: "1" if wildcards.cls=="gg" else "2"
+          db=lambda wildcards: "2" if wildcards.cls=="gg" else "1"
      conda:
           "envs/other.yml"
      shell:
           "python scripts/manta.py "
-          "-i {input.tsv} -o {output.full} -x {output.tax} "
+          "-i {input.tsv} "
+          "-o {output.full} -x {output.tax} "
+          "-a {output.abundant} "
           "-t {input.taxonpath} -n {input.names} "
           "-d {params.db} -r {wildcards.r}"
+
+rule manta_alpha_diversity:
+     input:
+          "results/{cohort}/{id}+rrf-d{r}+alphadiversity.tsv"
+     output:
+          "results/{cohort}/{id}+rrf-d{r}+manta_alphadiversity.csv"
+     conda:
+          "envs/other.yml"
+     shell:
+          "python scripts/prepare_manta_alpha_diversity.py "
+          "-i {input} "
+          "-o {output}"
+
+rule summary_manta:
+     """Produces summarized manta results in zipped file"""
+     input:
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta.csv",
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_tax.csv",
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_abundant_tax.csv",
+          "results/{cohort}/{id}+rrf-d{r}+manta_alphadiversity.csv"
+     output:
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta.zip"
+     conda:
+          "envs/other.yml"
+     shell:
+          "zip -j {output} {input}"
+
+
 
 rule summary:
      """Produces summarized results in zipped file"""
@@ -696,11 +727,12 @@ rule summary:
           "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+otu_tax_biom.tsv",
           "results/{cohort}/{id}+cls-{cls}+phyloseq.RDS",
           "results/{cohort}/{id}+rrf-d{r}+alphadiversity.tsv",
-          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta.tsv",
-          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_tax.tsv",
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta.csv",
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_tax.csv",
           "results/{cohort}/{id}_seq.tsv",
           "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+beta_braycurtis.tsv",
-          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+beta_jaccard.tsv"
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+beta_jaccard.tsv",
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_abundant_tax.csv"
      output:
           "results/{cohort}/{id}+cls-{cls}+rrf-d{r}.zip"
      conda:

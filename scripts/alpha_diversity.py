@@ -11,7 +11,7 @@ from qiime2.plugins.diversity.pipelines import alpha
 
 @click.command()
 @click.option("--inp")
-@click.option("--metrics", default='simpson,chao1,shannon,observed_features')
+@click.option("--metrics", default='shannon,simpson,chao1,observed_features')
 @click.option("--outp")
 def alpha_diversity(inp, metrics, outp):
     """[summary]

@@ -8,7 +8,7 @@ empty_rank = {
 
 def get_rank_from_ncbi(rank, taxonomy, taxonpath):
     ret = [[taxonomy.get(x[3:]) for x in y] for y in rank]
-    ret1 = []    
+    ret1 = []
     for x in ret:
         if x == [None, None, None, None, None, None, None]:
             next
@@ -16,8 +16,8 @@ def get_rank_from_ncbi(rank, taxonomy, taxonpath):
             max_id = x[max([i for i in range(len(x)) if x[i] is not None])]
             txp = taxonpath.get(max_id, empty_rank)
             item = []
-        
-        
+
+
             for r in ['k', 'p', 'c', 'o', 'f', 'g', 's']:
                 _item = txp[r]
                 if _item == "":
@@ -26,15 +26,30 @@ def get_rank_from_ncbi(rank, taxonomy, taxonpath):
             ret1.append(item)
     return ret1
 
+def top_taxons(df):
+    ret = df.sort_values(9, ascending=False)
+    ret['cumsum'] = ret[9].cumsum()
+    ret = ret[ret['cumsum'] < 90]
+    #print(ret)
+    ret.drop(['cumsum', 8,9,10], axis="columns", inplace=True)
+    ret = ret.melt(id_vars=[0, 11])
+    ret.drop_duplicates(inplace=True)
+    ret.columns = ['sample_id', 'method_id','rank_id', 'taxonomy_id']
+    ret = ret[ret['taxonomy_id']!= 'uc']
+    return ret[['sample_id', 'rank_id', 'taxonomy_id', 'method_id']]
+
 @click.command()
 @click.option("-i", "input_file", required=True, type=str)
+#@click.option("-v", "alphadiversity", required=True, type=str)
 @click.option("-o", "output_file", required=True, type=str)
 @click.option("-t", "taxonpath", required=True, type=str)
+@click.option("-a", "abundant_taxonomy", required=True, type=str)
 @click.option("-n", "names", required=True, type=str)
 @click.option("-d", "database", required=True, type=str)
 @click.option("-r", "rarefaction", required=True, type=int)
 @click.option("-x", "output_taxonomy", required=True, type=str)
-def manta(input_file, output_file, taxonpath, names, database, rarefaction, output_taxonomy):
+#@click.option("-p", "output_alphadiversity", required=True, type=str)
+def manta(input_file, output_file, taxonpath, abundant_taxonomy, names, database, rarefaction, output_taxonomy):
     df = pd.read_csv(input_file, sep="\t", skiprows=[0])
     with open(taxonpath) as f:
         taxonpath=json.load(f)
@@ -46,23 +61,39 @@ def manta(input_file, output_file, taxonpath, names, database, rarefaction, outp
     d.columns = ['0', '1', '2', '3', '4', '5', '6']
     df.drop("#OTU ID", axis="columns", inplace=True)
     df3 = d.join(df)
-    
+
     df3m = df3.melt(id_vars=['0', '1', '2', '3', '4', '5', '6'])
     df4 = df3m.loc[:,['0', '1', '2', '3', '4', '5', '6']].copy().melt()
 
     df3m = df3m.loc[:,['variable', '0', '1', '2', '3', '4', '5', '6', 'value']]
-    
+
     df3m['pct'] = (df3m['value']/rarefaction)*100
-    
+
     df3m['db'] = int(database)
     df3m['method'] = 1
     df3m = df3m[df3m['value']!= 0]
-    df3m.to_csv(output_file, header=None, index=None, sep="\t")
+    df3m.rename(columns={
+        '0' : "kingdum_id", '1': 'phylum_id', '2':'class_id', '3':'order_id', '4':'family_id','5':'genus_id', '6':'species_id','value':'count', 'variable':'sample_id', 'pct':'percentage', 'db':'database'}, inplace=True)
+    df3m.to_csv(output_file, index=None)
 
     df4['variable'] = df4['variable'].astype(int) + 1
     df4 = df4[df4['value']!= "uc"]
     df4['names'] = [names.get(x) for x in df4['value']]
-    df4.iloc[:,[1,0,2]].drop_duplicates().to_csv(output_taxonomy, index=None, header=None, sep="\t")
+    df4=df4.iloc[:,[1,0,2]].drop_duplicates()
+    df4.columns = ['taxonomy_id', "rank_id", "taxonomy"]
+    df4.to_csv(output_taxonomy, index=None)
+
+    # abundant_taxons
+    df5 = df3m.copy()
+    df5.columns = range(12)
+    abundant_taxons = pd.DataFrame(df5.groupby(0).apply(lambda x: top_taxons(x))).reset_index(drop=True)
+    abundant_taxons.to_csv(abundant_taxonomy, index=False)
+
+    # alpha diversity for manta:
+    #alphadiversity_df = pd.read_csv(alphadiversity,comment="#")
+    #alphadiversity_df.to_csv(output_alphadiversity)
+
+
 
 if __name__ == "__main__":
     manta()
