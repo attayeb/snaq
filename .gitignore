@@ -9,6 +9,7 @@ old-qza/
 fastqc/
 kmer/
 old/
+results/*
 documentation/
 
 # keep folders
@@ -16,6 +17,8 @@ documentation/
 !qza/.gitkeep
 
 # ignore files
+*.zip
+*.biom
 *.fastq
 *.svg
 *.out
