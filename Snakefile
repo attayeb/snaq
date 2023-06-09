@@ -675,7 +675,8 @@ rule manta:
      output:
           full="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta.csv",
           tax="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_tax.csv",
-          abundant="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_abundant_tax.csv"
+          abundant="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_abundant_tax.csv",
+          sample="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_sample_ids.csv"
      params:
           db=lambda wildcards: "2" if wildcards.cls=="gg" else "1"
      conda:
@@ -684,6 +685,7 @@ rule manta:
           "python scripts/manta.py "
           "-i {input.tsv} "
           "-o {output.full} -x {output.tax} "
+          "-s {output.sample} "
           "-a {output.abundant} "
           "-t {input.taxonpath} -n {input.names} "
           "-d {params.db} -r {wildcards.r}"
@@ -700,13 +702,40 @@ rule manta_alpha_diversity:
           "-i {input} "
           "-o {output}"
 
+rule summary_manta_1:
+     """Produces summarized manta results in zipped file"""
+     input:
+          microbiota="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta.csv",
+          taxonomy="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_tax.csv",
+          dominant_taxon="results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_abundant_tax.csv",
+          sample_diversity="results/{cohort}/{id}+rrf-d{r}+manta_alphadiversity.csv",
+          sample_ids = "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_sample_ids.csv"
+     output:
+          otaxonomy=temp("results/{cohort}/{id}+cls-{cls}+rrf-d{r}/taxonomy.csv"),
+          omicrobiota=temp("results/{cohort}/{id}+cls-{cls}+rrf-d{r}/microbiota.csv"),
+          osample_diversity=temp("results/{cohort}/{id}+cls-{cls}+rrf-d{r}/sample_diversity.csv"),
+          odominant_taxon=temp("results/{cohort}/{id}+cls-{cls}+rrf-d{r}/dominant_taxon.csv"),
+          sample_ids = temp("results/{cohort}/{id}+cls-{cls}+rrf-d{r}/sample.csv")
+     conda:
+          "envs/other.yml"
+     shell:
+          "cp {input.microbiota} {output.omicrobiota} && "
+          "cp {input.taxonomy} {output.otaxonomy} && "
+          "cp {input.sample_diversity} {output.osample_diversity} && "
+          "cp {input.dominant_taxon} {output.odominant_taxon} &&"
+          "cp {input.sample_ids} {output.sample_ids}"
+
+
+
+
 rule summary_manta:
      """Produces summarized manta results in zipped file"""
      input:
-          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta.csv",
-          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_tax.csv",
-          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta_abundant_tax.csv",
-          "results/{cohort}/{id}+rrf-d{r}+manta_alphadiversity.csv"
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}/taxonomy.csv",
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}/microbiota.csv",
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}/sample_diversity.csv",
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}/dominant_taxon.csv",
+          "results/{cohort}/{id}+cls-{cls}+rrf-d{r}/sample.csv"
      output:
           "results/{cohort}/{id}+cls-{cls}+rrf-d{r}+manta.zip"
      conda:

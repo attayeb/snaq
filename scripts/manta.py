@@ -43,13 +43,14 @@ def top_taxons(df):
 #@click.option("-v", "alphadiversity", required=True, type=str)
 @click.option("-o", "output_file", required=True, type=str)
 @click.option("-t", "taxonpath", required=True, type=str)
+@click.option("-s", "sample_file_name", required=True, type=str)
 @click.option("-a", "abundant_taxonomy", required=True, type=str)
 @click.option("-n", "names", required=True, type=str)
 @click.option("-d", "database", required=True, type=str)
 @click.option("-r", "rarefaction", required=True, type=int)
 @click.option("-x", "output_taxonomy", required=True, type=str)
 #@click.option("-p", "output_alphadiversity", required=True, type=str)
-def manta(input_file, output_file, taxonpath, abundant_taxonomy, names, database, rarefaction, output_taxonomy):
+def manta(input_file, output_file, taxonpath, abundant_taxonomy, sample_file_name, names, database, rarefaction, output_taxonomy):
     df = pd.read_csv(input_file, sep="\t", skiprows=[0])
     with open(taxonpath) as f:
         taxonpath=json.load(f)
@@ -70,17 +71,20 @@ def manta(input_file, output_file, taxonpath, abundant_taxonomy, names, database
     df3m['pct'] = (df3m['value']/rarefaction)*100
 
     df3m['db'] = int(database)
-    df3m['method'] = 1
+    df3m['method_id'] = 1
     df3m = df3m[df3m['value']!= 0]
     df3m.rename(columns={
-        '0' : "kingdum_id", '1': 'phylum_id', '2':'class_id', '3':'order_id', '4':'family_id','5':'genus_id', '6':'species_id','value':'count', 'variable':'sample_id', 'pct':'percentage', 'db':'database'}, inplace=True)
+        '0' : "kingdom_id", '1': 'phylum_id', '2':'class_id', '3':'order_id', '4':'family_id','5':'genus_id', '6':'species_id','value':'read_num', 'variable':'sample_id', 'pct':'read_pct', 'db':'reference_db_id'}, inplace=True)
+    df3m['read_num'] = df3m['read_num'].astype(int)
     df3m.to_csv(output_file, index=None)
+
+    df3m['sample_id'].rename("id").drop_duplicates().to_csv(sample_file_name, index=False)
 
     df4['variable'] = df4['variable'].astype(int) + 1
     df4 = df4[df4['value']!= "uc"]
     df4['names'] = [names.get(x) for x in df4['value']]
     df4=df4.iloc[:,[1,0,2]].drop_duplicates()
-    df4.columns = ['taxonomy_id', "rank_id", "taxonomy"]
+    df4.columns = ['id', "rank_id", "name"]
     df4.to_csv(output_taxonomy, index=None)
 
     # abundant_taxons
