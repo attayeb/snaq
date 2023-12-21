@@ -102,17 +102,39 @@ rule qza_multiqc:
      shell:
           "multiqc -o {output} {input}"
 
-rule download_names_and_taxonpath:
-     """Download database information from github"""
+rule download_taxonomy:
+     """Download taxonomy information from ncbi"""
      output:
-          taxonpath = "db/taxonpath.json",
-          names = "db/names.json"
+          "db/nodes.dmp",
+          "db/names.dmp"
      shell:
           """
           cd db
-          wget https://github.com/attayeb/snaq/releases/download/testing/names.json
-          wget https://github.com/attayeb/snaq/releases/download/testing/taxonpath.json
+          wget https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz
+          tar -xvf taxdump.tar.gz names.dmp nodes.dmp
           """
+
+rule create_taxonpath:
+   """Create taxonpath.json file"""
+   input:
+         "db/nodes.dmp"
+   output:
+         "db/taxonpath.json",
+   shell:
+      "python scripts/create_taxonpath.py "
+      "-i {input} "
+      "-o {output} "
+
+rule create_taxon_names:
+   """Create names.json file"""
+   input:
+         "db/names.dmp"
+   output:
+         "db/names.json",
+   shell:
+      "python scripts/names2json.py "
+      "-i {input} "
+      "-o {output} "
 
 rule dataset_multiqc:
      """Combines multiple Fastqc reports using Multiqc. This rule combines all the FastqC reports of one cohort"""
